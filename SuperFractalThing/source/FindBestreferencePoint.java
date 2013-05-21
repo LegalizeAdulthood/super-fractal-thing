@@ -19,7 +19,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
-//   	import java.util.Iterator;
+// 
 
 import java.util.Iterator;
 import java.util.Map;

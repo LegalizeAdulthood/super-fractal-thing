@@ -231,7 +231,7 @@ public class Details extends Approximation {
 	
 	//
 	// Find point for which DELTA_n is zero
-	// This is a repeating point, or repeater, as DELTA_n = DELTA_(n+i) for all i
+	// This is a repeating point, or repeater, as DELTA_i = DELTA_(n+i) for all i
 	//
 	void FindScreenCoords( float screen[], double dx, double dxi )
 	{
