@@ -88,6 +88,7 @@ interface SFTGui
 	void ExportImage(BufferedImage aImage);
 	void SetCalculationTime(long aTime_ms);
     void AddToUndoBuffer();
+    void OutOfMemory();
 }
 
 interface LibraryLoader
@@ -175,6 +176,14 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		if (mRedo_item!=null)
 			mRedo_item.setEnabled(mUndo_buffer.CanRedo());
     }
+    
+    public void OutOfMemory()
+    {
+		JOptionPane.showMessageDialog(mFrame,
+			    "Out of Memory!\n",
+			    "Error",
+			    JOptionPane.WARNING_MESSAGE);
+    }   
     
 	public void SetCalculationTime(long aTime_ms)
 	{
@@ -1233,8 +1242,16 @@ class SftComponent extends Component implements MouseInputListener, Runnable, Ac
 			if (mExport_buffer!=null)
 			{
 		        BufferedImage image = mExport_buffer.MakeTexture(mPalette, mCalculation.GetSuperSampleType());
-		        mExport_buffer = null;
-				mGui.ExportImage(image);
+		        if (image==null)
+		        {
+			        mExport_buffer = null;
+		        	mGui.OutOfMemory();
+		        }
+		        else
+		        {
+			        mExport_buffer = null;
+					mGui.ExportImage(image);
+		        }
 			}
 			else
 			{

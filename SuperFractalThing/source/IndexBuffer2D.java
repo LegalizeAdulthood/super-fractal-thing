@@ -113,89 +113,96 @@ public class IndexBuffer2D
 		BufferedImage image=null;
 		int x,y,i,j,k,l,m,n,o,p,q, w,h,y2;
 
-		switch (aSuper_sample)
+		try
 		{
-		case SUPER_SAMPLE_NONE:
-			image = new BufferedImage(mWidth, mHeight, BufferedImage.TYPE_INT_ARGB);
-		
-			for (y=0,y2=mHeight-1; y<mHeight; y++,y2--)
-				for (x=0; x<mWidth; x++)
-				{
-					i=GetValue(x,y);
-		       		image.setRGB(x, y2,aPalette.GetColour(i));	
-		       	 				
-				}
-			break;
-		case SUPER_SAMPLE_2X:
-			w = mWidth-1;
-			h = mHeight/2;
-			image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			switch (aSuper_sample)
+			{
+			case SUPER_SAMPLE_NONE:
+				image = new BufferedImage(mWidth, mHeight, BufferedImage.TYPE_INT_ARGB);
 			
-			for (y=0,y2=h-1; y<h; y++,y2--)
-				for (x=0; x<w; x++)
-				{
-					i=GetValue(x,y);
-					j=GetValue(x,y+1);
-					k=GetValue(x,y+h+1);
-					l=GetValue(x+1,y+h+1);
-		       		image.setRGB(x, y2,aPalette.GetAverageColour(i,j,k,l));					
-				}
-			break;
-		case SUPER_SAMPLE_4X:
-			w = mWidth/2;
-			h = mHeight/2;
-			image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-			
-			for (y=0,y2=mHeight-2; y<mHeight; y+=2,y2-=2)
-				for (x=0; x<mWidth; x+=2)
-				{
-					i=GetValue(x,y);
-					j=GetValue(x,y+1);
-					k=GetValue(x+1,y+1);
-					l=GetValue(x+1,y);
-		       		image.setRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l));					
-				}
-			break;
-		case SUPER_SAMPLE_4X_9:
-			w = mWidth/2;
-			h = mHeight/2;
-			image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-			
-			for (y=0,y2=mHeight-3; y<mHeight-1; y+=2,y2-=2)
-				for (x=0; x<mWidth-1; x+=2)
-				{
-					i=GetValue(x,y);
-					j=GetValue(x,y+1);
-					k=GetValue(x+1,y+1);
-					l=GetValue(x+1,y);
-					m=GetValue(x+2,y);
-					n=GetValue(x+2,y+1);
-					o=GetValue(x+2,y+2);
-					p=GetValue(x+1,y+2);
-					q=GetValue(x,y+2);
-		       		image.setRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
-				}
-			break;
-		case SUPER_SAMPLE_9X:
-			w = mWidth/3;
-			h = mHeight/3;
-			image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-			
-			for (y=0,y2=mHeight-2; y<mHeight; y+=3,y2-=3)
-				for (x=0; x<mWidth; x+=3)
-				{
-					i=GetValue(x,y);
-					j=GetValue(x,y+1);
-					k=GetValue(x+1,y+1);
-					l=GetValue(x+1,y);
-					m=GetValue(x+2,y);
-					n=GetValue(x+2,y+1);
-					o=GetValue(x+2,y+2);
-					p=GetValue(x+1,y+2);
-					q=GetValue(x,y+2);
-		       		image.setRGB(x/3, y2/3,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
-				}
-			break;
+				for (y=0,y2=mHeight-1; y<mHeight; y++,y2--)
+					for (x=0; x<mWidth; x++)
+					{
+						i=GetValue(x,y);
+			       		image.setRGB(x, y2,aPalette.GetColour(i));	
+			       	 				
+					}
+				break;
+			case SUPER_SAMPLE_2X:
+				w = mWidth-1;
+				h = mHeight/2;
+				image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+				
+				for (y=0,y2=h-1; y<h; y++,y2--)
+					for (x=0; x<w; x++)
+					{
+						i=GetValue(x,y);
+						j=GetValue(x,y+1);
+						k=GetValue(x,y+h+1);
+						l=GetValue(x+1,y+h+1);
+			       		image.setRGB(x, y2,aPalette.GetAverageColour(i,j,k,l));					
+					}
+				break;
+			case SUPER_SAMPLE_4X:
+				w = mWidth/2;
+				h = mHeight/2;
+				image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+				
+				for (y=0,y2=mHeight-2; y<mHeight; y+=2,y2-=2)
+					for (x=0; x<mWidth; x+=2)
+					{
+						i=GetValue(x,y);
+						j=GetValue(x,y+1);
+						k=GetValue(x+1,y+1);
+						l=GetValue(x+1,y);
+			       		image.setRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l));					
+					}
+				break;
+			case SUPER_SAMPLE_4X_9:
+				w = mWidth/2;
+				h = mHeight/2;
+				image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+				
+				for (y=0,y2=mHeight-3; y<mHeight-1; y+=2,y2-=2)
+					for (x=0; x<mWidth-1; x+=2)
+					{
+						i=GetValue(x,y);
+						j=GetValue(x,y+1);
+						k=GetValue(x+1,y+1);
+						l=GetValue(x+1,y);
+						m=GetValue(x+2,y);
+						n=GetValue(x+2,y+1);
+						o=GetValue(x+2,y+2);
+						p=GetValue(x+1,y+2);
+						q=GetValue(x,y+2);
+			       		image.setRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
+					}
+				break;
+			case SUPER_SAMPLE_9X:
+				w = mWidth/3;
+				h = mHeight/3;
+				image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+				
+				for (y=0,y2=mHeight-2; y<mHeight; y+=3,y2-=3)
+					for (x=0; x<mWidth; x+=3)
+					{
+						i=GetValue(x,y);
+						j=GetValue(x,y+1);
+						k=GetValue(x+1,y+1);
+						l=GetValue(x+1,y);
+						m=GetValue(x+2,y);
+						n=GetValue(x+2,y+1);
+						o=GetValue(x+2,y+2);
+						p=GetValue(x+1,y+2);
+						q=GetValue(x,y+2);
+			       		image.setRGB(x/3, y2/3,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
+					}
+				break;
+			}
+		}
+		catch (OutOfMemoryError e)
+		{
+			return null;
 		}
 		return image;
 	}
