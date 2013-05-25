@@ -45,7 +45,7 @@ public class AboutDialog implements ActionListener
 {
 JDialog mDialog;
 URI mUri;
-	
+
 	public AboutDialog(JFrame aFrame, Component aComponent)
 	{
 		
@@ -53,8 +53,8 @@ URI mUri;
 
         JPanel p = new JPanel();
         JLabel label;
-        mDialog.setSize(new Dimension(300,350));
-        p.setPreferredSize(new Dimension(300,350));
+        mDialog.setSize(new Dimension(400,500));
+        p.setPreferredSize(new Dimension(400,500));
 
         mDialog.setContentPane(p);
   
@@ -75,7 +75,7 @@ URI mUri;
         gbc.gridy++;
         gbc.gridwidth=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        label=new JLabel("Version 0.2", null, JLabel.LEFT);
+        label=new JLabel("Version 0.3", null, JLabel.LEFT);
         label.setPreferredSize(new Dimension(250,40));
         p.add(label,gbc);   
  
@@ -93,13 +93,13 @@ URI mUri;
         gbc.gridwidth=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         label=new JLabel("<HTML>For info on how SuperFractalThing works:", null, JLabel.LEFT);
-        label.setPreferredSize(new Dimension(250,40));
+        label.setPreferredSize(new Dimension(250,20));
         p.add(label,gbc);
         
         gbc.gridy++;
 		try {
 //			mUri = new URI("http://www.science.eclipse.co.uk/SFT_Maths.html");
-			mUri = new URI("http://www.science.eclipse.co.uk/sft_maths.pdf");
+			mUri = new URI("http://www.superfractalthing.co.nf/sft_maths.pdf");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -115,6 +115,7 @@ URI mUri;
         button.setBackground(Color.WHITE);
         button.setToolTipText(mUri.toString());
         button.addActionListener(this);
+        button.setPreferredSize(new Dimension(250,40));
         p.add(button,gbc);
         
         gbc.gridx=0;
@@ -122,14 +123,16 @@ URI mUri;
         gbc.gridwidth=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         label=new JLabel("Email:", null, JLabel.LEFT);
-        label.setPreferredSize(new Dimension(250,40));
+        label.setPreferredSize(new Dimension(250,20));
         p.add(label,gbc);
         
         gbc.gridy++;
         button = new JButton();
+        button.setPreferredSize(new Dimension(250,40));
         button.setActionCommand("email");
         button.setText("<HTML><FONT color=\"#000099\"><U>superfractalthing@gmail.com</U></FONT>"
-            + "</HTML>");
+            + "</HTML>");          
+        
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setBorderPainted(false);
         button.setOpaque(false);
@@ -137,11 +140,34 @@ URI mUri;
         button.addActionListener(this);
         p.add(button,gbc);
 
+        
+        gbc.gridx=0;
+        gbc.gridy++;
+        gbc.gridwidth=1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        label=new JLabel("<HTML>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. The source code can be obtained from:", null, JLabel.LEFT);
+        label.setPreferredSize(new Dimension(300,120));
+        p.add(label,gbc);   
+
+        gbc.gridy++;
+        button = new JButton();
+        button.setActionCommand("sourceforge");
+        button.setPreferredSize(new Dimension(250,40));
+        button.setText("<HTML><FONT color=\"#000099\"><U>sourceforge.net</U></FONT></HTML>");
+        button.setHorizontalAlignment(SwingConstants.LEFT);
+        button.setBorderPainted(false);
+        button.setOpaque(false);
+        button.setBackground(Color.WHITE);
+        button.addActionListener(this);
+        p.add(button,gbc);
+         
+        gbc.gridy++;
         gbc.gridy++;
         button = new JButton();
         button.setText("OK");
         button.addActionListener(this);
         p.add(button,gbc);	
+        
 	}
 
 	public void Run()
@@ -157,6 +183,23 @@ URI mUri;
 		{
 			try {
 				Desktop.getDesktop().browse(mUri);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		if (arg0.getActionCommand()=="sourceforge")
+		{
+			URI uri;
+			try {
+				uri = new URI("http://sourceforge.net/projects/suprfractalthng/");
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+	 		try {
+				Desktop.getDesktop().browse(uri);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
