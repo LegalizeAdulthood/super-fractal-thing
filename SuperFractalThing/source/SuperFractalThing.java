@@ -52,8 +52,6 @@ import javax.imageio.ImageIO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
@@ -64,8 +62,6 @@ import java.text.DecimalFormat;
 import java.text.AttributedCharacterIterator;
 import java.text.ParsePosition;
 
-import javax.jnlp.FileContents;
-import javax.jnlp.FileOpenService;
 import javax.jnlp.FileSaveService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
@@ -129,33 +125,37 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		JFrame f = new JFrame("SuperFractalThing");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public static void main(String[] args)
+	{
 		
-		int N_CPUS = Runtime.getRuntime().availableProcessors();
+/*		int N_CPUS = Runtime.getRuntime().availableProcessors();
 		
 		System.out.println("Num CPUS");
 		System.out.println(N_CPUS);
 		System.out.println(java.lang.Runtime.getRuntime().maxMemory()); 
-	    SuperFractalThing ap = new SuperFractalThing();
-	    ap.init();
+*/
+		SuperFractalThing ap = new SuperFractalThing();
 	    ap.start();
 
     
-	    f.add("Center", ap);
-        f.pack();
-        f.setVisible(true);
- 
-        mFrame = f;
 
+ 
  	}
 
 	public void start()
 	{
-        mUndo_buffer = new UndoBuffer();
+	    init();
+	    
+		mFrame = new JFrame("SuperFractalThing");
+		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		mUndo_buffer = new UndoBuffer();
 	    initComponents();	
-	}
+	    
+	    mFrame.add("Center", this);
+	    mFrame.pack();
+	    mFrame.setVisible(true);
+ 	}
 	
 	public void SetProgress(int aProgress, int pMax)
 	{
@@ -201,48 +201,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		}
 		if (command=="Open")
 		{
-			FileOpenService fos; 
-
-		    try { 
-		        fos = (FileOpenService)ServiceManager.lookup("javax.jnlp.FileOpenService"); 
-		    } catch (UnavailableServiceException e) { 
-		        fos = null; 
-		   	 	JFileChooser chooser = new JFileChooser();
-			 
-			    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
-			    chooser.setFileFilter(filter);
-			    int returnVal = chooser.showOpenDialog(this);
-			    if(returnVal == JFileChooser.APPROVE_OPTION)
-			    {
-			       System.out.println("You chose to open this file: " +
-			            chooser.getSelectedFile().getName());
-			       
-			       File f = chooser.getSelectedFile();
-			       
-			       LoadTheFile(f);
-			       
-			    } 
-			    return;
-		        
-		    } 
-
-		    if (fos != null) { 
-		        try { 
-		            // ask user to select a file through this service 
-		            FileContents fc = fos.openFileDialog(null, null); 
-		            // ask user to select multiple files through this service 
-		            //FileContents[] fcs = fos.openMultiFileDialog(null, null); 
-		            
-		            InputStream is = fc.getInputStream();
-		            BufferedReader br = new BufferedReader( new InputStreamReader(is));		
-		            LoadTheFile(br);
-		        } catch (Exception e) { 
-		            e.printStackTrace(); 
-		        } 
-		    } 
-		    
-/*	
-*/
+			OpenFile();
 		}
 		else if (command=="Save")
 		{
@@ -254,60 +213,11 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 			str+="r="+mPos_x_box.getText()+"\n";
 			str+="i="+mPos_y_box.getText()+"\n";
 			str+="iteration_limit="+mIterations_box.getText().replaceAll(",", "")+"\n";
+
 			
-			ByteArrayInputStream bis;
-			try {
-				bis = new ByteArrayInputStream(str.getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
-			}
-			FileSaveService fss; 
-		    try { 
-		        fss = (FileSaveService)ServiceManager.lookup("javax.jnlp.FileSaveService"); 
-		    } catch (UnavailableServiceException e) { 
-		        fss = null; 
-		    } 
-		    
-		    if (fss!=null)
-		    {
-		    	String[] exts={"txt"};
-		  
-				try {
-					fss.saveFileDialog(null,exts,bis,"sft_save.txt");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
-		    else
-		    {
-		   	 	JFileChooser chooser = new JFileChooser();
-			 
-			    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
-			    chooser.setFileFilter(filter);
-			    int returnVal = chooser.showSaveDialog(this);
-			    if(returnVal == JFileChooser.APPROVE_OPTION)
-			    {
-			       System.out.println("You chose to open this file: " +
-			            chooser.getSelectedFile().getName());
-			       
-			       File f = chooser.getSelectedFile();
-			       
-			       BufferedWriter file;
-					try {
-						file = new BufferedWriter(new FileWriter(f));
-						file.write(str);
-						file.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					};
-			    } 
-			    return;
-		    }
+			SaveFile(str);
+			
+
 		}
 		else if (command=="Reset")
 		{
@@ -429,6 +339,52 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		}
 	}
 	
+	void OpenFile()
+	{
+   	 	JFileChooser chooser = new JFileChooser();
+		 
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showOpenDialog(this);
+	    if(returnVal == JFileChooser.APPROVE_OPTION)
+	    {
+	       System.out.println("You chose to open this file: " +
+	            chooser.getSelectedFile().getName());
+	       
+	       File f = chooser.getSelectedFile();
+	       
+	       LoadTheFile(f);
+	       
+	    } 
+	    return;
+	}
+	
+	void SaveFile(String str)
+	{
+   	 	JFileChooser chooser = new JFileChooser();
+		 
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showSaveDialog(this);
+	    if(returnVal == JFileChooser.APPROVE_OPTION)
+	    {
+	       System.out.println("You chose to open this file: " +
+	            chooser.getSelectedFile().getName());
+	       
+	       File f = chooser.getSelectedFile();
+	       
+	       BufferedWriter file;
+			try {
+				file = new BufferedWriter(new FileWriter(f));
+				file.write(str);
+				file.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
+	    } 
+	}
+
 	public void ExportImage(BufferedImage aImage)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
