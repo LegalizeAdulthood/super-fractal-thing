@@ -230,6 +230,8 @@ public class SFTPalette implements IPalette
 		mDecay_g = 10000;
 		mDecay_b = 20000;
 		
+		mEnd_colour = 0xff000000;
+		
 		mColour = new int[3];
 		
 		mBands = new PaletteBand[NUM_BANDS];
