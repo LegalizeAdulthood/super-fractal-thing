@@ -142,7 +142,7 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 		DoAPass( 0,0, 1.6f,1.6f, 9 );
 		
 		//std::map<int, FBRPEntry>::reverse_iterator top,top2,top3;
-		Map.Entry<Integer,FBRPEntry> top,top2,top_extra,top3;
+		Map.Entry<Integer,FBRPEntry> top,top2,top3;
 		
 		
 		for (pass=0; pass<100; pass++)
@@ -155,11 +155,11 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			else
 				top2 = top;
 			
-			if (itr.hasNext())
+/*			if (itr.hasNext())
 				top_extra = itr.next();
 			else
 				top_extra = top;
-		
+*/		
 			top3 = mMax_count;
 
 			
@@ -272,11 +272,12 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 				{
 					top = top3;
 				}
-				else while (mDetails.GetIsFailedRepeater() && (top.getValue()).count == 1 && 
+				else while (itr.hasNext() &&
+								mDetails.GetIsFailedRepeater() && (top.getValue()).count == 1 && 
 								Math.abs((top.getValue()).total_p - initial_p) < mP_step*0.6f &&
 								Math.abs((top.getValue()).total_q - initial_q) < mQ_step*0.6f)
 				{
-					top=top_extra;
+					top=itr.next();
 				}
 					
 			}
