@@ -85,8 +85,8 @@ Component mComponent;
 		
         JPanel p = new JPanel();
         JLabel label;
-        mDialog.setSize(new Dimension(300,300));
-        p.setPreferredSize(new Dimension(300,300));
+        mDialog.setSize(new Dimension(300,260));
+        p.setPreferredSize(new Dimension(300,260));
 
         mDialog.setContentPane(p);
   
@@ -144,11 +144,22 @@ Component mComponent;
         mSuper_sample.setSelectedIndex(2);
         p.add(mSuper_sample,gbc);
         
+        gbc.gridx=0;
+        gbc.gridy++;
+        gbc.gridwidth=2;
+        gbc.ipady=50;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        String str = "System Memory ";
+        str+=java.lang.Runtime.getRuntime().maxMemory()/(1024.0*1024.0);
+        str+="MB";
+        label = new JLabel(str, null, JLabel.CENTER);
+        p.add(label,gbc);
+    
         gbc.ipady = 0;
         gbc.insets = new Insets(30,0,0,0);  //top padding
         gbc.anchor = GridBagConstraints.PAGE_END; //bottom of space
         gbc.gridx=0;
-        gbc.gridy=6;
+        gbc.gridy++;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth=1;
         mCancel_button = new JButton("Cancel");
@@ -156,12 +167,14 @@ Component mComponent;
         mCancel_button.addActionListener(this);       
 
         gbc.gridx=1;
-        gbc.gridy=6;
+        //gbc.gridy=6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth=1;
         mOK_button = new JButton("OK");
         p.add(mOK_button,gbc);
         mOK_button.addActionListener(this);       	
+
+        
 	}
 	
 	public boolean Run()
