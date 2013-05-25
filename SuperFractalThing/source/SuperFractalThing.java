@@ -40,7 +40,6 @@ import java.awt.event.ActionEvent;
 import java.awt.image.*;
 import java.awt.*;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,7 +51,6 @@ import javax.imageio.ImageIO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
@@ -62,9 +60,6 @@ import java.text.DecimalFormat;
 import java.text.AttributedCharacterIterator;
 import java.text.ParsePosition;
 
-import javax.jnlp.FileSaveService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
 
 interface SFTGui
 {
@@ -396,50 +391,34 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 			return;
 		}
 
-		
-		FileSaveService fss; 
-	    try { 
-	        fss = (FileSaveService)ServiceManager.lookup("javax.jnlp.FileSaveService"); 
-	    } catch (UnavailableServiceException e) { 
-	        fss = null; 
-	    } 
-	    
-	    if (fss!=null)
+		SaveByteArrayOutputStream(bos);
+	}
+	
+	
+	void SaveByteArrayOutputStream(ByteArrayOutputStream bos)
+	{	
+	    JFileChooser chooser = new JFileChooser();
+		 
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG",  "png");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showSaveDialog(this);
+	    if(returnVal == JFileChooser.APPROVE_OPTION)
 	    {
-		    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		    String[] exts={"png"};
+	       
+	       File f = chooser.getSelectedFile();
+	       
+	       FileOutputStream fs;
 			try {
-				fss.saveFileDialog(null,exts,bis,"sft_exp.png");
+				fs = new FileOutputStream(f);
+		       fs.write(bos.toByteArray());
+		       fs.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}	    	
-	    }
-	    else
-	    {
-		    JFileChooser chooser = new JFileChooser();
-			 
-		    FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG",  "png");
-		    chooser.setFileFilter(filter);
-		    int returnVal = chooser.showSaveDialog(this);
-		    if(returnVal == JFileChooser.APPROVE_OPTION)
-		    {
-		       
-		       File f = chooser.getSelectedFile();
-		       
-		       FileOutputStream fs;
-				try {
-					fs = new FileOutputStream(f);
-			       fs.write(bos.toByteArray());
-			       fs.close();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
+			}
 	    }
 	    return;		
 	}

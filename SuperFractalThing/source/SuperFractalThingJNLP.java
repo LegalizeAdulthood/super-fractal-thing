@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -106,4 +107,30 @@ public class SuperFractalThingJNLP extends SuperFractalThing
 	    }
 	}
 
+	@Override
+	void SaveByteArrayOutputStream(ByteArrayOutputStream bos)
+	{
+		FileSaveService fss; 
+	    try { 
+	        fss = (FileSaveService)ServiceManager.lookup("javax.jnlp.FileSaveService"); 
+	    } catch (UnavailableServiceException e) { 
+	        fss = null; 
+	    } 
+	    
+	    if (fss!=null)
+	    {
+		    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		    String[] exts={"png"};
+			try {
+				fss.saveFileDialog(null,exts,bis,"sft_exp.png");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	    	
+	    }
+	    else
+	    {
+	    	super.SaveByteArrayOutputStream(bos);
+	    }
+	}
 }
