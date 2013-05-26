@@ -1,5 +1,24 @@
 
-
+//	SuperFractalThingJNLP
+//	Super class of SuperFractalThing that adds JNLP file access
+// 
+//    Copyright 2013 Kevin Martin
+//
+//    This file is part of SuperFractalThing.
+//
+//    SuperFractalThing is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    any later version.
+//
+//    SuperFractalThing is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
+//
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +32,7 @@ import javax.jnlp.FileOpenService;
 import javax.jnlp.FileSaveService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
+import javax.swing.JFrame;
 
 
 public class SuperFractalThingJNLP extends SuperFractalThing
@@ -27,8 +47,17 @@ public class SuperFractalThingJNLP extends SuperFractalThing
 	{
 		System.out.println("JNLP");
 		
+		mFrame = new JFrame("SuperFractalThing");
+		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		SuperFractalThing ap = new SuperFractalThingJNLP();
+		ap.init();
 	    ap.start();
+
+    
+	    mFrame.add("Center", ap);
+	    mFrame.pack();
+	    mFrame.setVisible(true);
 	}
 	
 	@Override

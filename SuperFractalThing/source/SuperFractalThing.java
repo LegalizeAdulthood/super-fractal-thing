@@ -120,36 +120,33 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	/**
 	 * @param args
 	 */
+
 	public static void main(String[] args)
 	{
 		
-/*		int N_CPUS = Runtime.getRuntime().availableProcessors();
-		
-		System.out.println("Num CPUS");
-		System.out.println(N_CPUS);
-		System.out.println(java.lang.Runtime.getRuntime().maxMemory()); 
-*/
+		mFrame = new JFrame("SuperFractalThing");
+		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		SuperFractalThing ap = new SuperFractalThing();
+		ap.init();
 	    ap.start();
 
     
+	    mFrame.add("Center", ap);
+	    mFrame.pack();
+	    mFrame.setVisible(true);
 
  
  	}
 
 	public void start()
 	{
-	    init();
+	   // init();
 	    
-		mFrame = new JFrame("SuperFractalThing");
-		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		mUndo_buffer = new UndoBuffer();
 	    initComponents();	
 	    
-	    mFrame.add("Center", this);
-	    mFrame.pack();
-	    mFrame.setVisible(true);
  	}
 	
 	public void SetProgress(int aProgress, int pMax)
