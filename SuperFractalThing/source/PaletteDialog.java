@@ -27,35 +27,28 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import javax.jnlp.FileContents;
-import javax.jnlp.FileOpenService;
-import javax.jnlp.FileSaveService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
+interface PaletteIO
+{
+	void SavePalette(String str);
+	String LoadPalette();
+}
 
 class ColourButton extends JButton implements ActionListener
 {
@@ -96,7 +89,7 @@ class ColourButton extends JButton implements ActionListener
 		mColour = aColour;
 	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, mColour));
 	}
-	}
+}
 
 
 public class PaletteDialog implements ActionListener
@@ -113,6 +106,7 @@ ColourButton mEnd_colour;
 String mInitial_state;
 Component mComponent;
 JFrame mFrame;
+PaletteIO mPalette_io;
 
 static int NUM_BANDS = 6;
 
@@ -122,11 +116,12 @@ JFormattedTextField mBand_period[];
 ColourButton mBand_modulate[];
 ColourButton mBand_offset[];
 
-	public PaletteDialog(JFrame aFrame, Component aComponent, SFTPalette aPalette)
+	public PaletteDialog(JFrame aFrame, Component aComponent, SFTPalette aPalette, PaletteIO aPalette_io)
 	{
 		mPalette = aPalette;
 		mComponent = aComponent;
 		mFrame = aFrame;
+		mPalette_io = aPalette_io;
 		
 		mDialog = new JDialog(aFrame, "Edit Palette", true);
 		md_di = new JFormattedTextField[3][2];
@@ -407,107 +402,20 @@ ColourButton mBand_offset[];
 		}
 		else if (command=="Load")
 		{
-			FileOpenService fos; 
-
-		    try { 
-		        fos = (FileOpenService)ServiceManager.lookup("javax.jnlp.FileOpenService"); 
-		    } catch (UnavailableServiceException e) { 
-		        fos = null; 
-		   	 	JFileChooser chooser = new JFileChooser();
-			 
-			    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
-			    chooser.setFileFilter(filter);
-			    int returnVal = chooser.showOpenDialog(mComponent);
-			    if(returnVal == JFileChooser.APPROVE_OPTION)
-			    {
-			       System.out.println("You chose to open this file: " +
-			            chooser.getSelectedFile().getName());
-			       
-			       File f = chooser.getSelectedFile();
-			       
-			       LoadTheFile(f);
-			       
-			    } 
-			    return;
-		        
-		    } 
-
-		    if (fos != null) { 
-		        try { 
-		            // ask user to select a file through this service 
-		            FileContents fc = fos.openFileDialog(null, null); 
-		            // ask user to select multiple files through this service 
-		            //FileContents[] fcs = fos.openMultiFileDialog(null, null); 
-		            
-		            InputStream is = fc.getInputStream();
-		            BufferedReader br = new BufferedReader( new InputStreamReader(is));		
-		            LoadTheFile(br);
-		        } catch (Exception e) { 
-		            e.printStackTrace(); 
-		        } 
-		    } 
-		    
-/*	
-*/
+			String str = mPalette_io.LoadPalette();
+			if (str!=null)
+			{
+				mPalette.ParseString(str);
+				
+				GetPaletteValues();
+			
+			}
 		}
 		else if (command=="Save")
 		{
 			String str = mPalette.ToString();
 
-			
-			ByteArrayInputStream bis;
-			try {
-				bis = new ByteArrayInputStream(str.getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
-			}
-			FileSaveService fss; 
-		    try { 
-		        fss = (FileSaveService)ServiceManager.lookup("javax.jnlp.FileSaveService"); 
-		    } catch (UnavailableServiceException e) { 
-		        fss = null; 
-		    } 
-		    
-		    if (fss!=null)
-		    {
-		    	String[] exts={"txt"};
-		  
-				try {
-					fss.saveFileDialog(null,exts,bis,"sft_save.txt");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
-		    else
-		    {
-		   	 	JFileChooser chooser = new JFileChooser();
-			 
-			    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
-			    chooser.setFileFilter(filter);
-			    int returnVal = chooser.showSaveDialog(mComponent);
-			    if(returnVal == JFileChooser.APPROVE_OPTION)
-			    {
-			       System.out.println("You chose to open this file: " +
-			            chooser.getSelectedFile().getName());
-			       
-			       File f = chooser.getSelectedFile();
-			       
-			       BufferedWriter file;
-					try {
-						file = new BufferedWriter(new FileWriter(f));
-						file.write(str);
-						file.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
-					};
-			    } 
-			    return;
-		    }
+			mPalette_io.SavePalette(str);
 		}		
 	}
 	

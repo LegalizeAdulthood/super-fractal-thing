@@ -86,7 +86,7 @@ interface LibraryLoader
 
 
 
-public class SuperFractalThing  extends JApplet implements SFTGui, ActionListener, LibraryLoader
+public class SuperFractalThing  extends JApplet implements SFTGui, ActionListener, LibraryLoader, PaletteIO
 {
 
 	/**
@@ -686,7 +686,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	    mMenu_bar = menuBar;
 	    
 		mDialog = new ExportDialog(mFrame, mComp);
-		mPalette_dialog = new PaletteDialog(mFrame, mComp, mPalette);
+		mPalette_dialog = new PaletteDialog(mFrame, mComp, mPalette, this);
 		mOptions_dialog = new OptionsDialog(mFrame, mComp);
 
 		mComp.SetSuperSampleType(mOptions_dialog.GetSuperSampleType());
@@ -718,6 +718,75 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         mIterations_label.setVisible(true);
         mSize_box.setVisible(true);    	
    }
+
+	@Override
+	public void SavePalette(String str)
+	{
+   	 	JFileChooser chooser = new JFileChooser();
+		 
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showSaveDialog(mComp);
+	    if(returnVal == JFileChooser.APPROVE_OPTION)
+	    {
+	       System.out.println("You chose to open this file: " +
+	            chooser.getSelectedFile().getName());
+	       
+	       File f = chooser.getSelectedFile();
+	       
+	       BufferedWriter file;
+			try {
+				file = new BufferedWriter(new FileWriter(f));
+				file.write(str);
+				file.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			};
+	    } 
+	    return;
+	}
+
+	@Override
+	public String LoadPalette()
+	{
+   	 	JFileChooser chooser = new JFileChooser();
+		 
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("SuperFractalThingFile",  "txt");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showOpenDialog(mComp);
+	    if(returnVal == JFileChooser.APPROVE_OPTION)
+	    {
+	       System.out.println("You chose to open this file: " +
+	            chooser.getSelectedFile().getName());
+	       
+	       File f = chooser.getSelectedFile();
+	       
+			try
+			{
+				FileReader fr = new FileReader(f);
+				BufferedReader br = new BufferedReader(fr);
+				char arr[]=new char[2048];
+				br.read(arr, 0,2048);
+				String str = String.copyValueOf(arr);
+				return str;
+				
+			}
+			catch (FileNotFoundException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+			catch (IOException e)
+			{
+				return null;			
+			}
+
+		}  
+	    return null;
+	}
 
 
 }

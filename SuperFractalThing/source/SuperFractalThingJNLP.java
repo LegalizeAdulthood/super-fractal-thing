@@ -1,3 +1,5 @@
+
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -132,5 +134,67 @@ public class SuperFractalThingJNLP extends SuperFractalThing
 	    {
 	    	super.SaveByteArrayOutputStream(bos);
 	    }
+	}
+	
+	@Override
+	public void SavePalette(String str)
+	{
+		ByteArrayInputStream bis;
+		FileSaveService fss; 
+	    try
+	    { 
+	        fss = (FileSaveService)ServiceManager.lookup("javax.jnlp.FileSaveService"); 
+			bis = new ByteArrayInputStream(str.getBytes("UTF-8"));
+	    	String[] exts={"txt"};
+			fss.saveFileDialog(null,exts,bis,"sft_save.txt");
+			return;
+	    }
+	    catch (UnavailableServiceException e)
+	    { 
+	    } 
+	    catch (IOException e)
+	    {	
+	   
+	    }
+	    
+	    super.SavePalette(str);
+	}
+	
+	@Override
+	public String LoadPalette()
+	{
+		FileOpenService fos; 
+
+	    try
+	    { 
+	        fos = (FileOpenService)ServiceManager.lookup("javax.jnlp.FileOpenService"); 
+	    }
+	    catch (UnavailableServiceException e)
+	    { 
+		    return super.LoadPalette();        
+	    } 
+
+	    if (fos != null)
+	    { 
+	        try
+	        { 
+	            // ask user to select a file through this service 
+	            FileContents fc = fos.openFileDialog(null, null); 
+	            // ask user to select multiple files through this service 
+	            //FileContents[] fcs = fos.openMultiFileDialog(null, null); 
+	            
+	            InputStream is = fc.getInputStream();
+	            BufferedReader br = new BufferedReader( new InputStreamReader(is));		
+				char arr[]=new char[2048];
+				br.read(arr, 0,2048);
+				String str = String.copyValueOf(arr);
+				return str;
+	        }
+	        catch (Exception e)
+	        { 
+	            e.printStackTrace(); 
+	        } 
+	    } 
+	    return null;
 	}
 }
