@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
@@ -29,6 +30,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+interface LibraryLoader
+{
+	void LoadTheFile(File f);
+	void LoadTheFile(BufferedReader br);
+}
 
 public class PositionLibrary implements ActionListener
 {

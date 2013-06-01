@@ -30,6 +30,22 @@ import java.math.MathContext;
 import javax.swing.Timer;
 import javax.swing.event.MouseInputListener;
 
+interface SFTGui
+{
+	void SetCoords( BigDecimal aSize, BigDecimal x, BigDecimal y, int iterations);
+	BigDecimal GetTheSize();
+	int GetIterations();
+	void SetIterations(int aValue);
+	BigDecimal[] GetCoords();
+	void StartProcessing();
+	void EndProcessing();
+	void SetHoverIndex(int index);
+	void SetProgress(int progress, int pMax);
+	void ExportImage(BufferedImage aImage);
+	void SetCalculationTime(long aTime_ms);
+    void AddToUndoBuffer();
+    void OutOfMemory();
+}
 
 
 public class SftComponent extends Component implements MouseInputListener, Runnable, ActionListener, IPaletteChangeNotify
