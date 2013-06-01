@@ -75,7 +75,7 @@ URI mUri;
         gbc.gridy++;
         gbc.gridwidth=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        label=new JLabel("Version 0.3.1", null, JLabel.LEFT);
+        label=new JLabel("Version 0.4", null, JLabel.LEFT);
         label.setPreferredSize(new Dimension(250,40));
         p.add(label,gbc);   
  
