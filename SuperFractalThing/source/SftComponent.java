@@ -116,16 +116,7 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 	
 	void Refresh()
 	{
-		if (mCalculation!=null)
-		{
-			if (mMax_iterations != mGui.GetIterations())
-				mMax_iterations = mGui.GetIterations();
-			else
-			{
-				mMax_iterations= Math.max(mMax_iterations, mCalculation.GetNewLimit());
-				mGui.SetIterations(mMax_iterations);
-			}
-		}
+		SetMaxIterations();
 		DoCalculation();
 	}
 	
