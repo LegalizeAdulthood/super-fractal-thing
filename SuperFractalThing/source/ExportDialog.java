@@ -42,7 +42,7 @@ public class ExportDialog implements ActionListener
 JDialog mDialog;
 JFormattedTextField mWidth_box;
 JFormattedTextField mHeight_box;
-JComboBox mSuper_sample;
+JComboBox<String> mSuper_sample;
 JButton mCancel_button;
 JButton mOK_button;
 boolean mOK;
@@ -140,7 +140,7 @@ Component mComponent;
         
         gbc.gridx=1;
         String options[] = {"None","x2","x4","x4 9 sample","x9"};
-        mSuper_sample = new JComboBox(options);
+        mSuper_sample = new JComboBox<String>(options);
         mSuper_sample.setSelectedIndex(2);
         p.add(mSuper_sample,gbc);
         

@@ -44,7 +44,7 @@ public class OptionsDialog implements ActionListener
 	JButton mOK_button;
 	boolean mOK;
 	JFormattedTextField mNum_threads;
-	JComboBox mSuper_sample;
+	JComboBox<String> mSuper_sample;
 	int mSave_ss;
 	int mSave_thr;
 	
@@ -93,7 +93,7 @@ public class OptionsDialog implements ActionListener
         gbc.gridx=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         String[] options = {"None", "x2","x4","x4 9 sample","x9"};
-        mSuper_sample = new JComboBox(options);
+        mSuper_sample = new JComboBox<String>(options);
         mSuper_sample.setPreferredSize(new Dimension(150,20));
         mSuper_sample.setSelectedIndex(1);
         p.add(mSuper_sample, gbc);       
