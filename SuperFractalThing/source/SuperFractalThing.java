@@ -491,7 +491,10 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	}
 	public int GetIterations()
 	{
-		return Integer.parseInt(mIterations_box.getText().replaceAll(",", ""));
+		String str = mIterations_box.getText().replaceAll(",", "");
+		str = str.replaceAll(" ", "");
+		str = str.replaceAll("\\.", "");
+		return Integer.parseInt(str);
 	}
 	public void SetIterations(int aValue)
 	{
