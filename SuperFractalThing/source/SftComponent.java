@@ -295,7 +295,21 @@ public class SftComponent extends Component implements MouseInputListener, Runna
         return new Dimension(1024, 768);
     }
     
-    
+	void SetMaxIterations()
+	{
+		mMax_iterations = mGui.GetIterations();
+		if (mCalculation!=null)
+		{
+			if (mMax_iterations != mGui.GetIterations())
+				mMax_iterations = mGui.GetIterations();
+			else
+			{
+				mMax_iterations= Math.max(mMax_iterations, mCalculation.GetNewLimit());
+				mGui.SetIterations(mMax_iterations);
+			}
+		}
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
@@ -310,12 +324,7 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 		
 		if (arg0.getClickCount()==2)
 		{
-			mMax_iterations = mGui.GetIterations();
-			if (mCalculation!=null)
-			{
-				mMax_iterations= Math.max(mMax_iterations, mCalculation.GetNewLimit());
-				mGui.SetIterations(mMax_iterations);
-			}
+			SetMaxIterations();
 			
 			double x_mul = x*1.0/mResolution_y - mResolution_x * 0.5/mResolution_y;
 			double y_mul = (0.5*mResolution_y - y)/mResolution_y;
@@ -358,6 +367,8 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 					s = (mDragged_size*768)/1024/2;
 					if (y - mSelected_y < s && mSelected_y-y < s)
 					{
+						SetMaxIterations();
+
 						double x_mul = mSelected_x*1.0/mResolution_y - mResolution_x * 0.5/mResolution_y;
 						double y_mul = (0.5*mResolution_y - mSelected_y)/mResolution_y;
 						
