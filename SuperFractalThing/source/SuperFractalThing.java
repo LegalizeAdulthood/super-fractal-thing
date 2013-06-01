@@ -198,10 +198,11 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		else if (command=="Save")
 		{
 			String str;
-			double size =  GetTheSize().doubleValue();
-			size*=0.5f;
+			BigDecimal half = new BigDecimal(0.5);
+			BigDecimal half_size =  GetTheSize().multiply(half);
+			//size*=0.5f;
 			
-			str="s="+Double.toString(size)+"\n";
+			str="s="+half_size.toString()+"\n";
 			str+="r="+mPos_x_box.getText()+"\n";
 			str+="i="+mPos_y_box.getText()+"\n";
 			str+="iteration_limit="+mIterations_box.getText().replaceAll(",", "")+"\n";
@@ -767,6 +768,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 				char arr[]=new char[2048];
 				br.read(arr, 0,2048);
 				String str = String.copyValueOf(arr);
+				br.close();
 				return str;
 				
 			}
@@ -821,7 +823,7 @@ class BigDecimalFormatter extends NumberFormatter
 		}
 	}
 	
-	public String valueToString(Object value) //Áthrows ParseException
+	public String valueToString(Object value) //ï¿½throws ParseException
 	{
 		if (value!=null)
 			return value.toString();
