@@ -530,12 +530,20 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         mSize_label=new JLabel("Horizontal size", null, JLabel.LEFT);
         p.add(mSize_label,gbc);
        
+        InternationalFormatter f2 = new InternationalFormatter();
+        f2.setFormat(new BigDecimalFormat());
+        f2.setAllowsInvalid(false);
+ 
+        InternationalFormatter size_format = new InternationalFormatter();
+        size_format.setFormat(new BigDecimalFormat());
+        size_format.setAllowsInvalid(false);
+
         gbc.gridx=1;
         gbc.gridwidth=2; 
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        DecimalFormat format = new DecimalFormat("#.#####E0");
+        //DecimalFormat format = new DecimalFormat("#.#####E0");
         mSize = new BigDecimal(1.5);
-        mSize_box = new JFormattedTextField(format);
+        mSize_box = new JFormattedTextField(size_format);
         mSize_box.setPreferredSize(new Dimension(400,20));
         //mSize_box.setAlignmentY(1);
         p.add(mSize_box, gbc);
@@ -555,11 +563,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         
         gbc.gridx=1;
         gbc.gridwidth=7;
-        //Format f2 = new BigDecimalFormat();
-        InternationalFormatter f2 = new InternationalFormatter();
-        f2.setFormat(new BigDecimalFormat());
-        f2.setAllowsInvalid(false);
-        
+       
         //f2.setMaximumFractionDigits(1000);
         mPos_x = new BigDecimal(-0.5);
         mPos_x_box = new JFormattedTextField(f2);
@@ -845,7 +849,7 @@ class BigDecimalFormat extends Format
 		{
 			BigDecimal x= new BigDecimal(source);
 			mOld_value = x;
-			if (source.endsWith(".") || source.contentEquals("-0"))
+			if (source.endsWith(".") || source.contentEquals("-0") || source.contains("E") || source.contains("e"))
 				mOld_string = source;
 			return x;
 		}
@@ -857,7 +861,7 @@ class BigDecimalFormat extends Format
 				mOld_string=null;
 				return null;
 			}
-			if (source.equals("-"))
+			if (source.equals("-") || source.endsWith("E") || source.endsWith("e") || source.endsWith("-"))
 			{
 				mOld_string = source;
 				mOld_value = new BigDecimal(0);
@@ -871,7 +875,7 @@ class BigDecimalFormat extends Format
 	public StringBuffer format(Object arg0, StringBuffer arg1,
 			FieldPosition arg2)
 	{
-		if (mOld_string!=null && mOld_value==arg0)
+		if (mOld_string!=null && mOld_value.equals(arg0))
 		{
 			arg1.append(mOld_string);
 			return arg1;
