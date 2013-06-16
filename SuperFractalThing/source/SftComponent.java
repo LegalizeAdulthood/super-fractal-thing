@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 import javax.swing.Timer;
 import javax.swing.event.MouseInputListener;
@@ -357,10 +358,14 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 			mPos = mPos.add( x_offset );
 			mPosi = mPosi.add( y_offset );
 			mSize = mSize.multiply(new BigDecimal(0.2));
+
+			int newScale = 6-mSize.precision()+mSize.scale();
+			mSize = mSize.setScale(newScale, RoundingMode.HALF_UP);
 			
 			mPos = mPos.stripTrailingZeros();
 			mPosi = mPosi.stripTrailingZeros();
 			mSize = mSize.stripTrailingZeros();
+			
 			
 			//mPos = mPos.add( new BigDecimal((x) * mSize/mResolution_y - mSize*mResolution_x/mResolution_y/2) );
 			//mPosi = mPosi.add( new BigDecimal((mResolution_y/2-y) * mSize/mResolution_y));
@@ -400,6 +405,9 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 						mPos = mPos.add( x_offset);
 						mPosi = mPosi.add( y_offset);
 						mSize = mSize.multiply(new BigDecimal(mDragged_size/1024.0));
+
+						int newScale = 6-mSize.precision()+mSize.scale();
+						mSize = mSize.setScale(newScale, RoundingMode.HALF_UP);
 
 						mPos = mPos.stripTrailingZeros();
 						mPosi = mPosi.stripTrailingZeros();
