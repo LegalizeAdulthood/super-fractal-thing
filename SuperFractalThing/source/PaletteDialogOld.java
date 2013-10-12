@@ -1,6 +1,6 @@
 //	PaletteDialog
 //
-//    Copyright 2013 Kevin Martin
+//    Copyright 2013 Steve Bryson and Kevin Martin
 //
 //    This file is part of SuperFractalThing.
 //
@@ -34,9 +34,9 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import javax.swing.BorderFactory;
+//import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
+//import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;

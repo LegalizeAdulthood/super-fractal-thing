@@ -76,7 +76,7 @@ public class SFTPalette implements IPalette
 	public int GetColour(int i)
 	{
         double co[] = new double[3];
-        boolean useRGB = false;
+        //boolean useRGB = false;
         
 		if (i==0)
 			return mEnd_colour;
@@ -275,8 +275,8 @@ public class SFTPalette implements IPalette
     public double[]  rgb2hsl( double[] rgb, boolean debug)
     {
         
-        int huezone = 0;
-        double rr, gg, bb;
+        //int huezone = 0;
+        //double rr, gg, bb;
         double hp = 0;
         double h, s, l;
         double r = rgb[0];

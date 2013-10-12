@@ -1,6 +1,6 @@
 //	PaletteDialog
 //
-//    Copyright 2013 Kevin Martin
+//    Copyright 2013 Steve Bryson and Kevin Martin
 //
 //    This file is part of SuperFractalThing.
 //
@@ -114,9 +114,9 @@ public class PaletteDialog implements ActionListener, ChangeListener
     JSlider mixerSlider[];
     JLabel mixerLabel[];
     
-    JComboBox cmapNumber;
-    JComboBox hslTypeMenu;
-    JComboBox colorComponentTypeMenu[];
+    JComboBox<String> cmapNumber;
+    JComboBox<String> hslTypeMenu;
+    JComboBox<?> colorComponentTypeMenu[];
     
     int hslComponentType[][];
     int hslBaseType[];
@@ -204,7 +204,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
         String[] options = {"Colormap 1", "Colormap 2", "Colormap 3", "Colormap 4", "Colormap 5", "Colormap 6"};
-        cmapNumber = new JComboBox(options);
+        cmapNumber = new JComboBox<String>(options);
         cmapNumber.setPreferredSize(new Dimension(100,20));
         cmapNumber.setSelectedIndex(0);
         cmapNumber.addActionListener(this);
@@ -214,7 +214,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
         String[] typeOptions = {"Sinusoid", "Linear Ramp", "Exp Ramp", "Stripe", "Gaussian", "Undefined"};
-        hslTypeMenu = new JComboBox(typeOptions);
+        hslTypeMenu = new JComboBox<String>(typeOptions);
         hslTypeMenu.setPreferredSize(new Dimension(100,20));
         hslTypeMenu.setSelectedIndex(0);
         hslTypeMenu.addActionListener(this);
@@ -250,7 +250,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
             gbc.gridx=3;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridwidth = 2;
-            colorComponentTypeMenu[i] = new JComboBox(componentTypeOptions);
+            colorComponentTypeMenu[i] = new JComboBox<String>(componentTypeOptions);
             colorComponentTypeMenu[i].setPreferredSize(new Dimension(100,20));
             colorComponentTypeMenu[i].setSelectedIndex(0);
             colorComponentTypeMenu[i].addActionListener(this);
@@ -442,7 +442,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
     }
 */
     public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider)e.getSource();
+        //JSlider source = (JSlider)e.getSource();
         if (paletteLoaded == true) {
             setCurrentColormap();
             SetPaletteValues();
@@ -485,7 +485,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
             hslComponentType[currentCmap][0] = colorComponentTypeMenu[0].getSelectedIndex();
             mPalette.setCmapType(currentCmap, 0, hslComponentType[currentCmap][0]);
             if (hslComponentType[currentCmap][0] != hslBaseType[currentCmap]) {
-                hslBaseType[currentCmap] = mPalette.UNDEFINED;
+                hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
                 mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
             }
         }
@@ -494,7 +494,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
             hslComponentType[currentCmap][1] = colorComponentTypeMenu[1].getSelectedIndex();
             mPalette.setCmapType(currentCmap, 1, hslComponentType[currentCmap][1]);
             if (hslComponentType[currentCmap][1] != hslBaseType[currentCmap]) {
-                hslBaseType[currentCmap] = mPalette.UNDEFINED;
+                hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
                 mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
             }
         }
@@ -503,7 +503,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
             hslComponentType[currentCmap][2] = colorComponentTypeMenu[2].getSelectedIndex();
             mPalette.setCmapType(currentCmap, 2, hslComponentType[currentCmap][2]);
             if (hslComponentType[currentCmap][2] != hslBaseType[currentCmap]) {
-                hslBaseType[currentCmap] = mPalette.UNDEFINED;
+                hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
                 mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
             }
         }
@@ -576,8 +576,8 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		double[] p = new double[NMIXERS];
 		double[][] s = new double[3][6];
 		Color cols[] = new Color[2];
-        int cmapGlobalType[] = new int[NMIXERS];
-        int cmapComponentType[][] = new int[NMIXERS][3];
+        //int cmapGlobalType[] = new int[NMIXERS];
+        //int cmapComponentType[][] = new int[NMIXERS][3];
         int currentCmap = cmapNumber.getSelectedIndex();
 
 		mPalette.GetGradientValues(p, s, cols);
@@ -603,7 +603,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
 //            System.out.format("setting menus%n");
 
             hslTypeMenu.setSelectedIndex(hslBaseType[currentCmap]);
-            if (hslBaseType[currentCmap] != mPalette.UNDEFINED)
+            if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
                 for (int i=0; i<3; i++)
                     colorComponentTypeMenu[i].setSelectedIndex(hslComponentType[currentCmap][i]);
             prevHslBaseType[currentCmap] = hslBaseType[currentCmap];
