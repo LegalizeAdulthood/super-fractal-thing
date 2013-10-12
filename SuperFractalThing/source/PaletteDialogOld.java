@@ -43,7 +43,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
+/*
 interface PaletteIO
 {
 	void SavePalette(String str);
@@ -91,8 +91,8 @@ class ColourButton extends JButton implements ActionListener
 	}
 }
 
-
-public class PaletteDialog implements ActionListener
+*/
+public class PaletteDialogOld implements ActionListener
 {
 JDialog mDialog;
 JFormattedTextField md_di[][];
@@ -100,7 +100,7 @@ JFormattedTextField mDecay[];
 JButton mCancel_button;
 JButton mOK_button;
 boolean mOK;
-SFTPalette mPalette;
+SFTPaletteOld mPalette;
 ColourButton mStart_colour;
 ColourButton mEnd_colour;
 String mInitial_state;
@@ -116,7 +116,7 @@ JFormattedTextField mBand_period[];
 ColourButton mBand_modulate[];
 ColourButton mBand_offset[];
 
-	public PaletteDialog(JFrame aFrame, Component aComponent, SFTPalette aPalette, PaletteIO aPalette_io)
+	public PaletteDialogOld(JFrame aFrame, Component aComponent, SFTPaletteOld aPalette, PaletteIO aPalette_io)
 	{
 		mPalette = aPalette;
 		mComponent = aComponent;

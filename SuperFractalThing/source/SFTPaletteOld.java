@@ -21,13 +21,13 @@
 
 import java.awt.Color;
 
-
+/*
 interface IPaletteChangeNotify
 {
 	void PaletteChanged();
 }
-
-class SFTPaletteOld implements IPalette
+*/
+class SFTPaletteVeryOld implements IPalette
 {
 
 	@Override
@@ -186,7 +186,7 @@ class PaletteBand
 }
 
 
-public class SFTPalette implements IPalette
+public class SFTPaletteOld implements IPalette
 {
 	public static int NUM_BANDS=6;
 	int mPalette[];
@@ -212,7 +212,7 @@ public class SFTPalette implements IPalette
 	int mColour[];
 	PaletteBand mBands[];
 	
-	public SFTPalette(IPaletteChangeNotify aNotify)
+	public SFTPaletteOld(IPaletteChangeNotify aNotify)
 	{
 		mNotify = aNotify;
 		
