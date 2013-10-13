@@ -116,7 +116,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
     
     JComboBox<String> cmapNumber;
     JComboBox<String> hslTypeMenu;
-    JComboBox<?> colorComponentTypeMenu[];
+    JComboBox<String>[] colorComponentTypeMenu;
     
     int hslComponentType[][];
     int hslBaseType[];
