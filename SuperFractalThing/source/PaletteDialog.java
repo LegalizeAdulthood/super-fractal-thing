@@ -111,12 +111,18 @@ public class PaletteDialog implements ActionListener, ChangeListener
     JSlider sShape[];
     JLabel shapeLabel[];
     
+    JSlider globalPhaseSlider;
+    JLabel globalPhaseLabel;
+    
+    JSlider cMapPhaseSlider;
+    JLabel cMapPhaseLabel;
+    
     JSlider mixerSlider[];
     JLabel mixerLabel[];
     
     JComboBox<String> cmapNumber;
     JComboBox<String> hslTypeMenu;
-    JComboBox<?> colorComponentTypeMenu[];
+    JComboBox<?>[] colorComponentTypeMenu;
     
     int hslComponentType[][];
     int hslBaseType[];
@@ -187,6 +193,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx=2;
         mEnd_colour = new ColourButton("M.Set Colour", Color.black, aFrame);
+        mEnd_colour.addChangeListener(this);
         p.add(mEnd_colour,gbc);       
         
         gbc.ipady = 5;
@@ -213,15 +220,38 @@ public class PaletteDialog implements ActionListener, ChangeListener
         gbc.gridx=2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
-        String[] typeOptions = {"Sinusoid", "Linear Ramp", "Exp Ramp", "Stripe", "Gaussian", "Undefined"};
+        String[] typeOptions = SFTPalette.typeNames;
         hslTypeMenu = new JComboBox<String>(typeOptions);
         hslTypeMenu.setPreferredSize(new Dimension(100,20));
         hslTypeMenu.setSelectedIndex(0);
         hslTypeMenu.addActionListener(this);
         p.add(hslTypeMenu, gbc);
 
+        gbc.gridy++;
+                
+        gbc.gridx=0;
+        gbc.gridwidth=3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        label=new JLabel("Phase", null, JLabel.LEFT);
+        p.add(label,gbc);
         
-        String[] componentTypeOptions = {"Sinusoid", "Linear Ramp", "Exp Ramp", "Stripe", "Gaussian"};
+        gbc.gridx=1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 3;
+        cMapPhaseSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) sliderScale, 0);
+        cMapPhaseSlider.setValue(0);
+        cMapPhaseSlider.addChangeListener(this);
+        p.add(cMapPhaseSlider, gbc);
+        
+        gbc.gridx=4;
+        gbc.gridwidth=1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        cMapPhaseLabel=new JLabel("0", null, JLabel.LEFT);
+        p.add(cMapPhaseLabel,gbc);
+        
+        String[] componentTypeOptions = new String[SFTPalette.UNDEFINED];
+        for (int i=0; i<SFTPalette.UNDEFINED; i++)
+        	componentTypeOptions[i] = SFTPalette.typeNames[i];
         for (int i=0; i<3; i++)
         {
             gbc.gridy++;
@@ -363,6 +393,8 @@ public class PaletteDialog implements ActionListener, ChangeListener
         }
   
 
+        
+        gbc.ipady=0;
         gbc.gridy++;
 
         gbc.gridx=0;
@@ -376,9 +408,40 @@ public class PaletteDialog implements ActionListener, ChangeListener
         gbc.gridx=0;
         gbc.gridwidth=3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        label=new JLabel("Mixer", null, JLabel.LEFT);
+        label=new JLabel("Mix", null, JLabel.LEFT);
         p.add(label,gbc);
         gbc.ipady=0;
+        
+        gbc.gridy++;
+
+        gbc.gridx=0;
+        gbc.gridwidth=3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        label=new JLabel("", null, JLabel.LEFT);
+        p.add(label,gbc);
+        gbc.ipady=0;
+        gbc.gridy++;
+        gbc.gridy++;
+        
+        gbc.gridx=0;
+        gbc.gridwidth=3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        label=new JLabel("Global Phase", null, JLabel.LEFT);
+        p.add(label,gbc);
+        
+        gbc.gridx=1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 3;
+        globalPhaseSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) sliderScale, 0);
+        globalPhaseSlider.setValue(0);
+        globalPhaseSlider.addChangeListener(this);
+        p.add(globalPhaseSlider, gbc);
+        
+        gbc.gridx=4;
+        gbc.gridwidth=1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        globalPhaseLabel=new JLabel("0", null, JLabel.LEFT);
+        p.add(globalPhaseLabel,gbc);
         
         for (int i=0; i<NMIXERS; i++) {
             gbc.gridy++;
@@ -444,6 +507,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
     public void stateChanged(ChangeEvent e) {
         //JSlider source = (JSlider)e.getSource();
         if (paletteLoaded == true) {
+//        	System.out.format("stateChanged%n");    		
             setCurrentColormap();
             SetPaletteValues();
         }
@@ -479,56 +543,60 @@ public class PaletteDialog implements ActionListener, ChangeListener
                 hslComponentType[currentCmap][i] = hslTypeMenu.getSelectedIndex();
             
             mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
-        }
-        if (source == colorComponentTypeMenu[0]) {
-//            System.out.format("cmap %d Hue menu, command %d%n", currentCmap, colorComponentTypeMenu[0].getSelectedIndex());
-            hslComponentType[currentCmap][0] = colorComponentTypeMenu[0].getSelectedIndex();
-            mPalette.setCmapType(currentCmap, 0, hslComponentType[currentCmap][0]);
-            if (hslComponentType[currentCmap][0] != hslBaseType[currentCmap]) {
-                hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
-                mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
+//        	System.out.format("changed cmap type%n");    		
+            if (!mPalette.getChanged(currentCmap)) {
+        		GetPaletteValues();
             }
         }
-        if (source == colorComponentTypeMenu[1]) {
-//            System.out.format("cmap %d Saturation menu, command %d%n", currentCmap, colorComponentTypeMenu[1].getSelectedIndex());
-            hslComponentType[currentCmap][1] = colorComponentTypeMenu[1].getSelectedIndex();
-            mPalette.setCmapType(currentCmap, 1, hslComponentType[currentCmap][1]);
-            if (hslComponentType[currentCmap][1] != hslBaseType[currentCmap]) {
-                hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
-                mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
-            }
-        }
-        if (source == colorComponentTypeMenu[2]) {
-//            System.out.format("cmap %d Luminance menu, command %d%n", currentCmap, colorComponentTypeMenu[2].getSelectedIndex());
-            hslComponentType[currentCmap][2] = colorComponentTypeMenu[2].getSelectedIndex();
-            mPalette.setCmapType(currentCmap, 2, hslComponentType[currentCmap][2]);
-            if (hslComponentType[currentCmap][2] != hslBaseType[currentCmap]) {
-                hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
-                mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
-            }
+        for (int i=0; i<3; i++) {
+        	if (source == colorComponentTypeMenu[i]) {
+        		//            System.out.format("cmap %d Hue menu, command %d%n", currentCmap, colorComponentTypeMenu[0].getSelectedIndex());
+        		hslComponentType[currentCmap][i] = colorComponentTypeMenu[i].getSelectedIndex();
+        		mPalette.setCmapType(currentCmap, i, hslComponentType[currentCmap][i]);
+//    			System.out.format("changed component %d cmap type%n", i);    		
+    			if (!mPalette.getChanged(currentCmap)) 
+    				GetPaletteValues();
+        		if (hslComponentType[currentCmap][i] != hslBaseType[currentCmap]) {
+        			hslBaseType[currentCmap] = SFTPalette.UNDEFINED;
+        			mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
+        		}
+        	}
         }
         
-		if (command=="   OK   ")
+		if (command=="   Close   ")
 		{
 			mOK=true;
 			mDialog.setVisible(false);
 			SetPaletteValues();
 		}
-		else if (command=="Cancel")
-		{
-			mOK=false;
-			mDialog.setVisible(false);
-			mPalette.ParseString(mInitial_state);
-		}
-		else if (command=="Refresh")
-		{
-			SetPaletteValues();
-		}
 		else if (command=="Help")
 		{
 			JOptionPane.showMessageDialog(mComponent,
-                "Use the gradient values to control how the colour channels change with the iteration count.\n"+
-                "Use the colour bands to create bands of modified colour to high light structure in highly chaotic regions.",
+					"The palette controls how the color channels change with the iteration count.\n"+
+							"The colors update in real time, and you can see the effect of moving a slider in the Mandelbrot window.\n"+
+							"You can define up to six periodic colormaps of iteration count to color.  These colormaps are combined via the mixer at the bottom.\n"+
+							"Each colormap is defined in terms of its Hue, Saturation and Luminance (HSL) components.\n"+
+							"Each HSL component of each colormap has one of 6 shapes:\n" +
+							"- sinusoid, Gaussian, ramp, two-sided-ramp, exponential ramp, exponential two-sided-ramp and stripe.\n"+
+							"The shape is chosen via the menus.\n"+
+							"The menu on the upper right sets all three HSL comonents to the same shape.\n"+
+							"Each shape is controlled via 5 parameters.  The menu on the upper left controls which colormap is being controlled by the sliders:\n"+
+							"- Frequency: how often the shape repeats.  The frequency scale sets the scale of the frequency slider\n"+
+							"--- Smaller frequency scales are useful when you are deeply zoomed in near the boundary of the Mandelbrot set.\n"+
+							"- Amplitude: the strength of the shape\n"+
+							"- Phase: offset in the period where the repeating shape is defined\n"+
+							"- Offset: The color component value of the zero point of the shape\n"+
+							"- Shape: A parameter the acts differently on the different shapes:\n"+
+							"--- Sine: shape skews the sine curve so the maximum and minimum are moved towards the center of the period.\n"+
+							"--- Gaussian, two-sided-ramp, exponential two-sided-ramp and stripe: shape controls the width of the ramp. Negative values invert the shape\n"+
+							"--- Ramp and exponential ramp: shape controls the length of the ramp. Negative values move the ramp in the opposite direction\n"+
+							"The colormap phase slider at the top controls the phase of all three HSL components for the current colormap.\n"+
+							"The global phase slider above the mixer controls the phase of all HSL components of all colormaps.\n"+
+							"\n"+
+							"Roughly, if f(x) is the shape, where x is (the iteration count mod 10,000) divided by 10,000,\n"+
+							"colormap HSL component = offset + (1-offset)*amplitude*f(x + phase).\n"+
+							"Here phase = global phase + colormap phase + component phase.\n"+
+							"",
 								"Palette Help",					
 								JOptionPane.PLAIN_MESSAGE);
 	
@@ -576,16 +644,22 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		double[] p = new double[NMIXERS];
 		double[][] s = new double[3][6];
 		Color cols[] = new Color[2];
-        //int cmapGlobalType[] = new int[NMIXERS];
-        //int cmapComponentType[][] = new int[NMIXERS][3];
         int currentCmap = cmapNumber.getSelectedIndex();
-
+		double cMapPhase = SFTPalette.getCMapPhase(currentCmap);
+		double globalPhase = SFTPalette.getGlobalPhase();
+		
 		mPalette.GetGradientValues(p, s, cols);
+//      System.out.format("GetPaletteValues: globalPhase = %f, cMapPhase = %f%n", globalPhase, cMapPhase);
         
 		mEnd_colour.SetColour(cols[1]);
 		
 		for (int i=0; i<3; i++)
 		{
+//			System.out.format("set component %d values: %n", i);
+//			for (int j=0; j<6; j++)
+//				System.out.format(" %f", s[i][j]);
+//			System.out.format("%n");
+			
 			sFreqScale[i].setValue(s[i][0]);
 			sFreq[i].setValue((int) s[i][1]);
 			sAmp[i].setValue((int) (s[i][2]*sliderScale));
@@ -594,19 +668,29 @@ public class PaletteDialog implements ActionListener, ChangeListener
 			sShape[i].setValue((int) (s[i][5]*sliderScale));
 		}
         
-        for (int i=0; i<NMIXERS; i++) {
+		cMapPhaseSlider.setValue((int) (cMapPhase*sliderScale/(2f*Math.PI)));
+		globalPhaseSlider.setValue((int) (globalPhase*sliderScale/(2f*Math.PI)));
+
+		for (int i=0; i<NMIXERS; i++) {
 			mixerSlider[i].setValue((int) (p[i]*sliderScale));
         }
         
         mPalette.getCmapType(hslBaseType, hslComponentType);
+        System.out.format("currentCmap = %d, hslBaseType = %d, prevHslBaseType = %d%n", currentCmap, hslBaseType[currentCmap], prevHslBaseType[currentCmap]);
+		for (int i=0; i<3; i++)
+	        System.out.format("component %d type = %d%n", i, hslComponentType[currentCmap][i]);
         if (hslBaseType[currentCmap] != prevHslBaseType[currentCmap]) {
-//            System.out.format("setting menus%n");
+            System.out.format("setting menus%n");
 
-            hslTypeMenu.setSelectedIndex(hslBaseType[currentCmap]);
-            if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
-                for (int i=0; i<3; i++)
-                    colorComponentTypeMenu[i].setSelectedIndex(hslComponentType[currentCmap][i]);
+        	hslTypeMenu.setSelectedIndex(hslBaseType[currentCmap]);
+        	if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
+        		for (int i=0; i<3; i++)
+        			colorComponentTypeMenu[i].setSelectedIndex(hslComponentType[currentCmap][i]);
             prevHslBaseType[currentCmap] = hslBaseType[currentCmap];
+        } else {
+        	if (hslBaseType[currentCmap] == SFTPalette.UNDEFINED)
+        		for (int i=0; i<3; i++)
+        			colorComponentTypeMenu[i].setSelectedIndex(hslComponentType[currentCmap][i]);
         }
         
         paletteLoaded = true;
@@ -633,11 +717,19 @@ public class PaletteDialog implements ActionListener, ChangeListener
             shapeLabel[i].setText(""+round(2*(sShape[i].getValue()/sliderScale - 0.5), 2));
 		}
         
+		double globalPhase = (double) 2f*Math.PI*(((Number)(globalPhaseSlider.getValue())).floatValue())/sliderScale;
+		globalPhaseLabel.setText(""+round(2f*globalPhaseSlider.getValue()/sliderScale, 2)+"\u03c0");
+        
+		double cMapPhase = (double) 2f*Math.PI*(((Number)(cMapPhaseSlider.getValue())).floatValue())/sliderScale;
+		cMapPhaseLabel.setText(""+round(2f*cMapPhaseSlider.getValue()/sliderScale, 2)+"\u03c0");
+		
         for (int i=0; i<NMIXERS; i++) {
 			p[i] = (double) (((Number)(mixerSlider[i].getValue())).floatValue())/sliderScale;
             mixerLabel[i].setText(""+round(mixerSlider[i].getValue()/sliderScale, 2));
         }
         
+        SFTPalette.setGlobalPhase(globalPhase);
+        SFTPalette.setCMapPhase(cMapPhase);
 		mPalette.SetGradientValues(p, s, mEnd_colour.GetColour());
 	}
                                   
@@ -663,10 +755,10 @@ public class PaletteDialog implements ActionListener, ChangeListener
 	{
 		String str;
 		
-		char arr[]=new char[1024];
+		char arr[]=new char[2048];
 
 		try {
-			br.read(arr, 0,1024);
+			br.read(arr, 0,2048);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

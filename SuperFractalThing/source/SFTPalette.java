@@ -34,12 +34,15 @@ public class SFTPalette implements IPalette
     
     public static final int NMIXERS = 6;
     public static final int SINE = 0;
-    public static final int LINEAR_RAMP = 1;
-    public static final int EXP_RAMP = 2;
-    public static final int STRIPE = 3;
-    public static final int GAUSSIAN = 4;
-    public static final int UNDEFINED = 5;
-    public static final String[] typeNames = {"Sine", "Linear Ramp", "Exp Ramp", "Stripe", "Gaussian", "Undefined"};
+    public static final int GAUSSIAN = 1;
+    public static final int LINEAR_RAMP = 2;
+    public static final int LINEAR_BI_RAMP = 3;
+    public static final int EXP_RAMP = 4;
+    public static final int EXP_BI_RAMP = 5;
+    public static final int STRIPE = 6;
+    public static final int UNDEFINED = 7;
+    public static final String[] typeNames = {"Sine", "Gaussian", "Linear Ramp", 
+    	"Linear Bi-Ramp", "Exp Ramp", "Exp Bi-Ramp", "Stripe", "Undefined"};
     public static final int colorResolution = 0x10000;
 	int mEnd_colour;
     
@@ -50,9 +53,12 @@ public class SFTPalette implements IPalette
     double maxMixColor[] = {1e99, 1e99, 1e99};
     double[][] colorStretch = new double[3][2];
     
+    public static double globalPhase = 0;
+    public static double[] cMapPhase = new double[NMIXERS];
+    
     SFTColormap[] cm = new SFTColormap[NMIXERS];
     double[] mixerValues = new double[NMIXERS];
-    int currentColormap = 0;
+    static int currentColormap = 0;
     
 	public SFTPalette(IPaletteChangeNotify aNotify)
 	{
@@ -67,7 +73,9 @@ public class SFTPalette implements IPalette
         }
         
         for (int i=0; i<NMIXERS; i++) {
-            cm[i] = new SFTColormap();
+        	cMapPhase[i] = 0;
+        	mixerValues[i] = 0;
+            cm[i] = new SFTColormap(i);
         }
         mixerValues[0] = 1;
     }
@@ -76,7 +84,6 @@ public class SFTPalette implements IPalette
 	public int GetColour(int i)
 	{
         double co[] = new double[3];
-        //boolean useRGB = false;
         
 		if (i==0)
 			return mEnd_colour;
@@ -85,10 +92,12 @@ public class SFTPalette implements IPalette
 		if (mPalette[i]!=0)
 			return mPalette[i];
         
-        co = getColor(i, true);
+        co = mixColor(i, true);
 
         for (int ci=0; ci<3; ci++)
         {
+        	if (co[ci] > 1 || co[ci] < 0)
+        		System.out.format("co[%d] out of bounds: %f%n", ci, co[ci]);
             mColour[ci] = ((int) (co[ci]*255)) & 255;
         }
         
@@ -96,7 +105,7 @@ public class SFTPalette implements IPalette
 		return mPalette[i];
 	}
     
-	public double[] getColor(int i, boolean doStretch)
+	public double[] mixColor(int i, boolean doStretch)
 	{
         double co[] = new double[3];
         
@@ -129,7 +138,13 @@ public class SFTPalette implements IPalette
                 co[ci] = colorStretch[ci][0]*co[ci] + colorStretch[ci][1];
             co = hsl2rgb(co, false);
         }
-
+        for (int ci=0; ci<3; ci++) {
+            if (co[ci] < 0)
+            	co[ci] = 0;
+            else if (co[ci] > 1)
+            	co[ci] = 1;
+        }
+        
 		return co;
 	}
     
@@ -149,15 +164,16 @@ public class SFTPalette implements IPalette
                 // set range
                 if (mixerValues[m] > 0) {
                     for (int p=0; p<3; p++) {
-                        if (co[p] < minComponentColor[p])
-                            minComponentColor[p] = co[p];
-                        else if (co[p] > maxComponentColor[p])
-                            maxComponentColor[p] = co[p];
+                    	double colorVal = mixerValues[m]*co[p];
+                        if (colorVal < minComponentColor[p])
+                            minComponentColor[p] = colorVal;
+                        else if (colorVal > maxComponentColor[p])
+                            maxComponentColor[p] = colorVal;
                     }
                 }
             }
             // mix is in rgb space
-            co = getColor(i, false);
+            co = mixColor(i, false);
             co = rgb2hsl(co, false);
             for (int p=0; p<3; p++) {
                 if (co[p] < minMixColor[p])
@@ -169,16 +185,17 @@ public class SFTPalette implements IPalette
         
         // stretch as y = colorStretch[0]*x + colorStretch[1]
         for (int p=0; p<3; p++) {
-            if (maxMixColor[p] != minMixColor[p]) {
+            if (Math.abs(maxMixColor[p] - minMixColor[p]) > 1e-2) {
                 colorStretch[p][0] = (maxComponentColor[p] - minComponentColor[p])/(maxMixColor[p] - minMixColor[p]);
                 colorStretch[p][1] = minComponentColor[p] - colorStretch[p][0]*minMixColor[p];
             } else {
                 colorStretch[p][0] = 1;
                 colorStretch[p][1] = 0;
             }
+//            System.out.format("component %d max/min: %f, %f, mix: %f, %f%n", p, minComponentColor[p], maxComponentColor[p], minMixColor[p], maxMixColor[p]);
+//            System.out.format("component %d color stretch: %f, %f%n", p, colorStretch[p][0], colorStretch[p][1]);
+//            System.out.format("component %d mix diff: %g%n", p, Math.abs(maxMixColor[p] - minMixColor[p]));
         }
-//        System.out.format("Luminance max/min: %f, %f, mix: %f, %f%n", minComponentColor[2], maxComponentColor[2], minMixColor[2], maxMixColor[2]);
-//        System.out.format("Luminance color stretch: %f, %f%n", colorStretch[2][0], colorStretch[2][1]);
     }
 
 	
@@ -223,6 +240,18 @@ public class SFTPalette implements IPalette
         cm[currentColormap].getValues(pSine);
         for (int i=0; i<NMIXERS; i++)
             m[i] = mixerValues[i];
+		aColours[1] = new Color( (mEnd_colour>>16)&255, (mEnd_colour>>8)&255, (mEnd_colour>>0)&255);
+		/*        System.out.format("GetGradientValues: globalPhase = %f, cMapPhase =", globalPhase);
+        for (int i=0; i<NMIXERS; i++)
+            System.out.format(" %f", cMapPhase[i]);
+        System.out.format("%n");
+*/
+//		for (int i=0; i<3; i++) {
+//			System.out.format("GetGradientValues: component %d:", i);
+//			for (int j=0; j<6; j++)
+//				System.out.format(" %f", pSine[i][j]);
+//			System.out.format("%n");
+//		}
 	}
 
 	public void SetGradientValues(double m[], double pSine[][], Color aEnd)
@@ -232,10 +261,35 @@ public class SFTPalette implements IPalette
             mixerValues[i] = m[i];
         setColorRanges();
 		mPalette = new int[colorResolution];
-		
+		mEnd_colour = aEnd.getRGB() | 0xff000000;
+/*        System.out.format("SetGradientValues: globalPhase = %f, cMapPhase =", globalPhase);
+        for (int i=0; i<NMIXERS; i++)
+            System.out.format(" %f", cMapPhase[i]);
+        System.out.format("%n");
+*/		
 		mNotify.PaletteChanged();
 	}
     
+	public static double getGlobalPhase() {
+		return globalPhase;
+	}
+	
+	public static double getCMapPhase(int mapNumber) {
+		return cMapPhase[mapNumber];
+	}
+	
+	public boolean getChanged(int mapNumber) {
+		return cm[mapNumber].getChanged();
+	}
+	
+	public static void setGlobalPhase(double aGlobalPhase) {
+		globalPhase = aGlobalPhase;
+	}
+	
+	public static void setCMapPhase(double aCMapPhase) {
+		cMapPhase[currentColormap] = aCMapPhase;
+	}
+	
 	void setCurrentColormap(int colormap)
 	{
         currentColormap = colormap;
@@ -352,92 +406,49 @@ public class SFTPalette implements IPalette
 	public String ToString()
 	{
 		String str="sft_palette\n";
-/*
-        str += mDr_di1;
-		str += ",";
-		str += mDr_di2;
-		str += ",";
-		str += mDecay_r;
+        for (int i=0; i<NMIXERS; i++) {
+            str += mixerValues[i];
+			str += ",";
+        }
 		str += "\n";
-
-		str += mDg_di1;
-		str += ",";
-		str += mDg_di2;
-		str += ",";
-		str += mDecay_g;
+        str += globalPhase;
 		str += "\n";
-
-		str += mDb_di1;
-		str += ",";
-		str += mDb_di2;
-		str += ",";
-		str += mDecay_b;
+        for (int i=0; i<NMIXERS; i++) {
+        	str += cMapPhase[i];
+        	if (i<NMIXERS-1)
+        		str += ",";
+        }
 		str += "\n";
-
-		str += mStart_red;
-		str += ",";
-		str += mStart_grn;
-		str += ",";
-		str += mStart_blu;
-		str += "\n";
-		
-		str += (mEnd_colour>>16) & 255;
-		str += ",";
-		str +=  (mEnd_colour>>8) & 255;
-		str += ",";
-		str +=  (mEnd_colour>>0) & 255;
-		str += "\n";
-
-
-		for (int i=0; i<NUM_BANDS; i++)
-		{
-			String s = mBands[i].ToString();
-			str += s;
-		}
-*/
+        for (int i=0; i<NMIXERS; i++)
+        	str += cm[i].valueString();
 		return str;
 	}
 	
 	public void ParseString(String aString)
 	{
+//        System.out.format("%s%n", aString);
 		String[] lines = aString.split("\n");
 	
 		if (!lines[0].contentEquals("sft_palette"))
 			return;
-/*
+		
 		String[] numbers = lines[1].split(",");
-		mDr_di1 = Float.parseFloat(numbers[0]);	
-		mDr_di2 = Float.parseFloat(numbers[1]);	
-		mDecay_r = Float.parseFloat(numbers[2]);	
-
-		numbers = lines[2].split(",");
-		mDg_di1 = Float.parseFloat(numbers[0]);	
-		mDg_di2 = Float.parseFloat(numbers[1]);	
-		mDecay_g = Float.parseFloat(numbers[2]);	
-		
+        for (int i=0; i<NMIXERS; i++) {
+            mixerValues[i] = Float.parseFloat(numbers[i]);
+        }
+        globalPhase = Float.parseFloat(lines[2]);
 		numbers = lines[3].split(",");
-		mDb_di1 = Float.parseFloat(numbers[0]);	
-		mDb_di2 = Float.parseFloat(numbers[1]);	
-		mDecay_b = Float.parseFloat(numbers[2]);	
-
-		numbers = lines[4].split(",");
-		mStart_red = Integer.parseInt(numbers[0]);	
-		mStart_grn = Integer.parseInt(numbers[1]);	
-		mStart_blu = Integer.parseInt(numbers[2]);	
-	
-		numbers = lines[5].split(",");
-		int r = Integer.parseInt(numbers[0]);	
-		int g = Integer.parseInt(numbers[1]);	
-		int b = Integer.parseInt(numbers[2]);	
-		
-		mEnd_colour  =(r<<16)+(g<<8)+b + 0xff000000;
-
-		for (int i=0; i<NUM_BANDS; i++)
-		{
-			mBands[i].ParseString( lines[6+i]);
-		}
-*/
-		mPalette = new int[colorResolution];
+        for (int i=0; i<NMIXERS; i++) {
+        	cMapPhase[i] = Float.parseFloat(numbers[i]);
+        }
+        for (int i=0; i<NMIXERS; i++) {
+        	int starti = 4+4*i;
+        	String cString[] = new String[4];
+        	for (int j=0; j<4; j++)
+        		cString[j] = lines[starti+j];
+        	cm[i].parseValueString(cString);
+        }        
+ 		mPalette = new int[colorResolution];
 		mNotify.PaletteChanged();
 	}
 }
@@ -448,10 +459,13 @@ class SFTColormap
     public static final int SATURATION = 1;
     public static final int LUMINANCE = 2;
     public int cmapType = SFTPalette.SINE;
+    public int mapNumber = -1;
+    boolean changed = false;
     
     SFTComponentmap[] HSLComponents = new SFTComponentmap[3];
     
-    public SFTColormap() {
+    public SFTColormap(int aMapNumber) {
+    	mapNumber = aMapNumber;
         setGlobalType(SFTPalette.SINE);
     }
     
@@ -459,7 +473,7 @@ class SFTColormap
         double[] co = new double[3];
         
         for (int ci=0; ci<3; ci++) {
-            co[ci] = HSLComponents[ci].getColor(i);
+            co[ci] = HSLComponents[ci].getColor(i, mapNumber);
             while (co[ci] > 1)
                 co[ci] = co[ci] - 1;
         }
@@ -469,13 +483,40 @@ class SFTColormap
     }
     
     public void getValues(double v[][]) {
-        for (int i=0; i<3; i++)
+//    	System.out.format("SFTColormap.getValues for map %d, chaged = %b%n", mapNumber, changed);    		
+        for (int i=0; i<3; i++) {
+        	if (!changed)
+        		HSLComponents[i].setDefaults();
             HSLComponents[i].getValues(v[i]);
+//        	System.out.format("component %d values:", i);    		
+//        	for (int j=0; j<6; j++)
+//            	System.out.format(" %f", v[i][j]);    		
+//        	System.out.format("%n");        
+        }
     }
     
     public void setValues(double v[][]) {
-        for (int i=0; i<3; i++)
-            HSLComponents[i].setValues(v[i]);
+//    	System.out.format("SFTColormap.setValues for map %d, chaged = %b%n", mapNumber, changed);    
+    	
+        for (int i=0; i<3; i++) {
+        	double[] d = HSLComponents[i].getDefaults();
+        	for (int c=0; c<5; c++) {
+        		if (d[c] != v[i][c])
+        			changed = true;
+        	}
+        }
+        if (changed)
+        	for (int i=0; i<3; i++) {
+        		HSLComponents[i].setValues(v[i]);
+//        		System.out.format("component %d values:", i);    		
+//        		for (int j=0; j<6; j++)
+//        			System.out.format(" %f", v[i][j]);    		
+//        		System.out.format("%n");  
+        	}
+    }
+    
+    public boolean getChanged() {
+    	return changed;
     }
     
     public void setGlobalType(int globalType) {
@@ -498,17 +539,23 @@ class SFTColormap
                 case SFTPalette.SINE:
                     HSLComponents[component] = new sineSFTComponentmap();
                     break;
+                case SFTPalette.GAUSSIAN:
+                    HSLComponents[component] = new gaussianSFTComponentmap();
+                    break;
                 case SFTPalette.LINEAR_RAMP:
                     HSLComponents[component] = new linearRampSFTComponentmap();
+                    break;
+                case SFTPalette.LINEAR_BI_RAMP:
+                    HSLComponents[component] = new linearBiRampSFTComponentmap();
                     break;
                 case SFTPalette.EXP_RAMP:
                     HSLComponents[component] = new expRampSFTComponentmap();
                     break;
+                case SFTPalette.EXP_BI_RAMP:
+                    HSLComponents[component] = new expBiRampSFTComponentmap();
+                    break;
                 case SFTPalette.STRIPE:
                     HSLComponents[component] = new stripeSFTComponentmap();
-                    break;
-                case SFTPalette.GAUSSIAN:
-                    HSLComponents[component] = new gaussianSFTComponentmap();
                     break;
             }
         }
@@ -518,6 +565,29 @@ class SFTColormap
     public int getComponentType(int component) {
         return HSLComponents[component].cmapType;
     }
+
+    public String valueString() {
+		String str="";
+		str += cmapType;
+		str += "\n";
+        for (int i=0; i<3; i++)
+            str += HSLComponents[i].valueString();
+        return str;
+    }
+    
+    public void parseValueString(String s[]) {
+    	cmapType = Integer.parseInt(s[0]);
+    	setGlobalType(cmapType);
+        for (int i=0; i<3; i++) {
+    		String[] numbers = s[i+1].split(",");
+            setComponentType(i, Integer.parseInt(numbers[0]));        
+        }
+        for (int i=0; i<3; i++) {
+            HSLComponents[i].parseValueString(s[i+1]);
+        }
+       changed = true;
+    }
+    
 }
 
 class SFTComponentmap
@@ -532,7 +602,7 @@ class SFTComponentmap
     public double colorFrequency = 10000f;
 
     public SFTComponentmap() {}
-    public double getColor(int i) {
+    public double getColor(int i, int mapNumber) {
         return 0;
     }
     
@@ -541,24 +611,61 @@ class SFTComponentmap
     }
     
     public void getValues(double v[]) {
-        for (int i=0; i<3; i++) {
-            v[0] = sFreqScale;
-            v[1] = sFreq;
-            v[2] = sAmp;
-            v[3] = sPhase;
-            v[4] = sOffset;
-            v[5] = sShape;
-        }
+    	v[0] = sFreqScale;
+    	v[1] = sFreq;
+    	v[2] = sAmp;
+    	v[3] = sPhase;
+    	v[4] = sOffset;
+    	v[5] = sShape;
     }
+    
+    public void setDefaults() {
+    	setValues(getDefaults());
+    }
+    
+    public double[] getDefaults() {
+    	double[] v = new double[5];
+    	return v;
+    }
+    
     public void setValues(double v[]) {
-        for (int i=0; i<3; i++) {
-            sFreqScale = v[0];
-            sFreq = v[1];
-            sAmp = v[2];
-            sPhase = v[3];
-            sOffset = v[4];
-            sShape = v[5];
-        }
+    	sFreqScale = v[0];
+    	sFreq = v[1];
+    	sAmp = v[2];
+    	sPhase = v[3];
+    	sOffset = v[4];
+    	sShape = v[5];
+    }
+    
+    public String valueString() {
+		String str="";
+		str += cmapType;
+		str += ",";
+		str += sFreqScale;
+		str += ",";
+		str += sFreq;
+		str += ",";
+		str += sAmp;
+		str += ",";
+		str += sPhase;
+		str += ",";
+		str += sOffset;
+		str += ",";
+		str += sShape;
+		str += "\n";
+		
+		return str;
+    }
+    
+    public void parseValueString(String s) {
+		String[] numbers = s.split(",");
+    	cmapType = Integer.parseInt(numbers[0]);
+    	sFreqScale = Float.parseFloat(numbers[1]);
+    	sFreq = Float.parseFloat(numbers[2]);
+    	sAmp = Float.parseFloat(numbers[3]);
+    	sPhase = Float.parseFloat(numbers[4]);
+    	sOffset = Float.parseFloat(numbers[5]);
+    	sShape = Float.parseFloat(numbers[6]);
     }
 }
 
@@ -566,21 +673,26 @@ class sineSFTComponentmap extends SFTComponentmap
 {
 
     public sineSFTComponentmap() {
-        sFreqScale = 1d;
-        sFreq = 25d;
-        sAmp = 1d;
-        sPhase = 0d;
-        sOffset = 0d;
-        sShape = 0.5d;
+    	setDefaults();
         cmapType = SFTPalette.SINE;
     }
     
-    public double getColor(int i) {
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.5d};
+        return v;
+    }
+    
+    public double getColor(int i, int mapNumber) {
         double co;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
+//		System.out.format("component %d, map %d: sFreqScale = %f%n", i, mapNumber, sFreqScale);    		
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
             x = computeShape(Math.PI*(x*sFreq*sFreqScale), sShape);
-            co = sOffset + (1-sOffset)*sAmp*(1 + Math.sin(sPhase + x))/2;
+            co = sOffset + (1-sOffset)*sAmp*(1 + Math.sin(fullPhase + x))/2;
         } else {
             co = sOffset + (1-sOffset)*sAmp;
         }
@@ -607,20 +719,24 @@ class sineSFTComponentmap extends SFTComponentmap
 class linearRampSFTComponentmap extends SFTComponentmap
 {
     public linearRampSFTComponentmap() {
-        sFreqScale = 1d;
-        sFreq = 0.5d;
-        sAmp = 1d;
-        sPhase = 0d;
-        sOffset = 0d;
-        sShape = 1d;
+    	setDefaults();
         cmapType = SFTPalette.LINEAR_RAMP;
     }
     
-    public double getColor(int i) {
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.9d};
+        return v;
+    }
+        
+    public double getColor(int i, int mapNumber) {
         double co = 0;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
-            double dx = ((sPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
+            double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
             
             if (rShape >= 0 && dx < rShape)
@@ -631,9 +747,50 @@ class linearRampSFTComponentmap extends SFTComponentmap
             }
             else
                 co = 0;
+            co = sOffset + (1-sOffset)*co;
+        } else {
+            co = sOffset + (1-sOffset)*sAmp;
+        }
+        
+        return co;
+    }
+}
+
+class linearBiRampSFTComponentmap extends SFTComponentmap
+{
+    public linearBiRampSFTComponentmap() {
+    	setDefaults();
+        cmapType = SFTPalette.LINEAR_BI_RAMP;
+    }
+    
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.9d};
+        return v;
+    }
+        
+    public double getColor(int i, int mapNumber) {
+        double co = 0;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
+        if (sFreqScale > 0) {
+            double x = i/colorFrequency;
+            double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
+            double rShape = (2*sShape - 1)/2;
+            double gt = 0;
             
-            //                if (co > 1 || co < 0)
-            //                    System.out.format("co = %f, dx = %f, sAmp = %f, rShape = %f%n", co, dx, sAmp, rShape);
+    		double ars = Math.abs(rShape);
+        	if (dx < ars)
+        		gt = 1-dx/ars;
+        	else if (dx > 1 - ars) {
+        		gt = 1 - 1/ars + dx/ars;
+        	}
+        	if (rShape >= 0)
+        	    co = sAmp*gt;
+        	else if (rShape < 0 ) 
+        	    co = sAmp*(1-gt);
+        	
             co = sOffset + (1-sOffset)*co;
         } else {
             co = sOffset + (1-sOffset)*sAmp;
@@ -646,20 +803,24 @@ class linearRampSFTComponentmap extends SFTComponentmap
 class expRampSFTComponentmap extends SFTComponentmap
 {
     public expRampSFTComponentmap() {
-        sFreqScale = 1d;
-        sFreq = 0.5d;
-        sAmp = 1d;
-        sPhase = 0d;
-        sOffset = 0d;
-        sShape = 1d;
+    	setDefaults();
         cmapType = SFTPalette.EXP_RAMP;
     }
     
-    public double getColor(int i) {
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.9d};
+        return v;
+    }
+    
+    public double getColor(int i, int mapNumber) {
         double co = 0;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
-            double dx = ((sPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
+            double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
             
             if (rShape >= 0)
@@ -682,23 +843,74 @@ class expRampSFTComponentmap extends SFTComponentmap
     }
 }
 
+class expBiRampSFTComponentmap extends SFTComponentmap
+{
+    public expBiRampSFTComponentmap() {
+    	setDefaults();
+        cmapType = SFTPalette.EXP_BI_RAMP;
+    }
+    
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.9d};
+        return v;
+    }
+    
+    public double getColor(int i, int mapNumber) {
+        double co = 0;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
+        if (sFreqScale > 0) {
+            double x = i/colorFrequency;
+            double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
+            double rShape = (2*sShape - 1)/2;
+            double gt = 0;
+            
+    		double ars = Math.abs(rShape);
+        	if (dx <= 0.5)
+        		gt = Math.exp(-dx/ars);
+        	else if (dx > 0.5) {
+        		gt = Math.exp(-(1-dx)/ars);
+        	}
+        	if (rShape >= 0)
+        	    co = sAmp*gt;
+        	else if (rShape < 0 ) 
+        	    co = sAmp*(1-gt);
+            
+            
+            //                if (co > 1 || co < 0)
+            //                    System.out.format("co = %f, dx = %f, sAmp = %f, rShape = %f%n", co, dx, sAmp, rShape);
+            co = sOffset + (1-sOffset)*co;
+        } else {
+            co = sOffset + (1-sOffset)*sAmp;
+        }
+        
+        return co;
+    }
+}
+
 class stripeSFTComponentmap extends SFTComponentmap
 {
     public stripeSFTComponentmap() {
-        sFreqScale = 1d;
-        sFreq = 0.5d;
-        sAmp = 1d;
-        sPhase = 0d;
-        sOffset = 0d;
-        sShape = 1d;
+    	setDefaults();
         cmapType = SFTPalette.STRIPE;
     }
     
-    public double getColor(int i) {
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.55d};
+        return v;
+    }
+    
+    public double getColor(int i, int mapNumber) {
         double co = 0;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
-            double dx = ((sPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
+            double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
             double ars = Math.abs(rShape);
             double adx = Math.abs(dx);
@@ -732,20 +944,24 @@ class stripeSFTComponentmap extends SFTComponentmap
 class gaussianSFTComponentmap extends SFTComponentmap
 {
     public gaussianSFTComponentmap() {
-        sFreqScale = 1d;
-        sFreq = 0.5d;
-        sAmp = 1d;
-        sPhase = 0d;
-        sOffset = 0d;
-        sShape = 1d;
+    	setDefaults();
         cmapType = SFTPalette.GAUSSIAN;
     }
     
-    public double getColor(int i) {
+    public double[] getDefaults() {
+        double[] v = {1d, 100d, 1d, 0d, 0d, 0.9d};
+        return v;
+    }
+    
+    public double getColor(int i, int mapNumber) {
         double co = 0;
+        double fullPhase;
+        
+        fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
+        fullPhase = fullPhase % 2*Math.PI;
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
-            double dx = ((sPhase + x*sFreq*sFreqScale))%(2*Math.PI)/(2*Math.PI);
+            double dx = ((fullPhase + x*sFreq*sFreqScale))%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
             double ars = 0.3*rShape*rShape;
             double adx = (dx - 0.5)*(dx - 0.5);
