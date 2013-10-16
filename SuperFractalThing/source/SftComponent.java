@@ -164,6 +164,9 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 		int expo=0;
 		precision = scale -precision + 8;
 		
+		if (precision < 7)
+			precision = 7;
+		
 		IndexBuffer2D buffer=null;
 		
 		switch (aSuper_sample)
