@@ -123,6 +123,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
 		mUndo_buffer = new UndoBuffer();
 	    initComponents();	
+		mPalette_dialog.Run();
 	    
  	}
 	
@@ -807,7 +808,7 @@ class BigDecimalFormatter extends NumberFormatter
 		}
 	}
 	
-	public String valueToString(Object value) //�throws ParseException
+	public String valueToString(Object value) //throws ParseException
 	{
 		if (value!=null)
 			return value.toString();
