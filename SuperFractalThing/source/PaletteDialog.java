@@ -676,11 +676,11 @@ public class PaletteDialog implements ActionListener, ChangeListener
         }
         
         mPalette.getCmapType(hslBaseType, hslComponentType);
-        System.out.format("currentCmap = %d, hslBaseType = %d, prevHslBaseType = %d%n", currentCmap, hslBaseType[currentCmap], prevHslBaseType[currentCmap]);
-		for (int i=0; i<3; i++)
-	        System.out.format("component %d type = %d%n", i, hslComponentType[currentCmap][i]);
+//        System.out.format("currentCmap = %d, hslBaseType = %d, prevHslBaseType = %d%n", currentCmap, hslBaseType[currentCmap], prevHslBaseType[currentCmap]);
+//		for (int i=0; i<3; i++)
+//	        System.out.format("component %d type = %d%n", i, hslComponentType[currentCmap][i]);
         if (hslBaseType[currentCmap] != prevHslBaseType[currentCmap]) {
-            System.out.format("setting menus%n");
+//            System.out.format("setting menus%n");
 
         	hslTypeMenu.setSelectedIndex(hslBaseType[currentCmap]);
         	if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
