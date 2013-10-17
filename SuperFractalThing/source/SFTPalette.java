@@ -738,6 +738,8 @@ class linearRampSFTComponentmap extends SFTComponentmap
             double x = i/colorFrequency;
             double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
+        	if (rShape == 0)
+        		rShape = 0.01;
             
             if (rShape >= 0 && dx < rShape)
                 co = sAmp*(1-dx/rShape);
@@ -778,6 +780,8 @@ class linearBiRampSFTComponentmap extends SFTComponentmap
             double x = i/colorFrequency;
             double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = (2*sShape - 1)/2;
+        	if (rShape == 0)
+        		rShape = 0.01;
             double gt = 0;
             
     		double ars = Math.abs(rShape);
@@ -822,6 +826,8 @@ class expRampSFTComponentmap extends SFTComponentmap
             double x = i/colorFrequency;
             double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
+        	if (rShape == 0)
+        		rShape = 0.01;
             
             if (rShape >= 0)
                 co = sAmp*Math.exp(-dx/rShape);
@@ -866,6 +872,8 @@ class expBiRampSFTComponentmap extends SFTComponentmap
             double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = (2*sShape - 1)/2;
             double gt = 0;
+        	if (rShape == 0)
+        		rShape = 0.01;
             
     		double ars = Math.abs(rShape);
         	if (dx <= 0.5)
@@ -912,6 +920,8 @@ class stripeSFTComponentmap extends SFTComponentmap
             double x = i/colorFrequency;
             double dx = ((fullPhase + x*sFreq)*sFreqScale)%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
+        	if (rShape == 0)
+        		rShape = 0.01;
             double ars = Math.abs(rShape);
             double adx = Math.abs(dx);
             
@@ -963,6 +973,8 @@ class gaussianSFTComponentmap extends SFTComponentmap
             double x = i/colorFrequency;
             double dx = ((fullPhase + x*sFreq*sFreqScale))%(2*Math.PI)/(2*Math.PI);
             double rShape = 2*sShape - 1;
+        	if (rShape == 0)
+        		rShape = 0.01;
             double ars = 0.3*rShape*rShape;
             double adx = (dx - 0.5)*(dx - 0.5);
             double gt = Math.exp(-adx/ars);
