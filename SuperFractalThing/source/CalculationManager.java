@@ -229,12 +229,14 @@ public class CalculationManager implements Runnable
 						mCentre_details.GetFailedRepeaterDetails().GetScreenOffsetX()-mCentre_details.GetScreenOffsetX(),
 						mCentre_details.GetFailedRepeaterDetails().GetScreenOffsetY()-mCentre_details.GetScreenOffsetY());
 				
+				///If centre value is 0, then it has probably been calculated ok, and we can ignore repeater point.
 				if (centre_value!=0)
 				{
 					float offset=0;
 					int value;
 					int count=0;
 					Details rep = mCentre_details.GetFailedRepeaterDetails();
+					//Move out from repeater point along +x until fbrp reference point seems to be working
 					do
 					{
 						offset += 1/300.0f;
@@ -246,6 +248,30 @@ public class CalculationManager implements Runnable
 					}
 					while ( count <2 && !mStop && offset<1);
 					
+					//Spiral out from repeater point until fbrp reference point seems to be working
+					for (float angle = 3.14f/5.0f; angle < 1.99f*3.14f; angle+=3.14f/5.0f)
+					{
+						do
+						{
+							float x = (float)Math.sin(angle)*offset;
+							float y = (float)Math.cos(angle)*offset;
+							value = rep.CalculateIterations(rep, 
+									x,
+									y);	
+							
+							if (value!=0 && value > centre_value-10)
+							{
+								offset += 1/300.0f;
+								continue;
+							}
+							
+							break;
+
+						}
+						while ( !mStop && offset<1);
+					
+					}
+
 					rep.SetSecondaryRadius(offset);
 				}
 				else 
