@@ -332,7 +332,7 @@ public class CalculationManager implements Runnable
 				corner_x + aScreen_width < secondary_offset_x - secondary_radius ||
 				corner_y > secondary_offset_y + secondary_radius ||
 				//corner_y + aScreen_width *pBuffer.GetHeight() / pBuffer.GetWidth() < secondary_offset_y - secondary_radius)//This works, but rearrange to remove divide
-				 + aScreen_width *pBuffer.GetHeight() < (secondary_offset_y - secondary_radius - corner_y) * pBuffer.GetWidth())
+				 aScreen_width *pBuffer.GetHeight() < (secondary_offset_y - secondary_radius - corner_y) * pBuffer.GetWidth())
 			{
 				aSecondary_details = null;
 			}
