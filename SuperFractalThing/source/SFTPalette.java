@@ -392,7 +392,7 @@ public class SFTPalette implements IPalette
             r = 0; g = x; b = chroma;
         } else if (hp < 5) {
             r = x; g = 0; b = chroma;
-        } else if (hp < 6) {
+        } else if (hp <= 6) {
             r =chroma; g = 0; b = x;
         }
         double m = l - chroma/2f;
