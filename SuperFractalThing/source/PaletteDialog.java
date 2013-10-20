@@ -94,7 +94,7 @@ class ColourButton extends JButton implements ActionListener
 }
 
 
-public class PaletteDialog implements ActionListener, ChangeListener
+public class PaletteDialog implements ActionListener, ChangeListener, PaletteLibraryLoader
 {
     public static final int NMIXERS = 6;
 

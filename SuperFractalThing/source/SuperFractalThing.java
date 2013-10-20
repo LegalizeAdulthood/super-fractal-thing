@@ -83,6 +83,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	JButton mCancel_button;
 	JLabel mIterations_label;
 	PositionLibrary mLibrary;
+	PaletteLibrary pLibrary;
 	JLabel mTime_label;
 	JMenuBar mMenu_bar;
 	ExportDialog mDialog;
@@ -608,6 +609,9 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
         mComp.CreateImage();
 
+		mDialog = new ExportDialog(mFrame, mComp);
+		mPalette_dialog = new PaletteDialog(mFrame, mComp, mPalette, this);
+		mOptions_dialog = new OptionsDialog(mFrame, mComp);
         
  	   //Menu bar
 	    JMenuBar menuBar = new JMenuBar();
@@ -664,13 +668,11 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         menuBar.add(navigate);
         
        	mLibrary = new PositionLibrary(menuBar, this);
+       	pLibrary = new PaletteLibrary(menuBar, mPalette_dialog);
 
        	setJMenuBar(menuBar);
 	    mMenu_bar = menuBar;
 	    
-		mDialog = new ExportDialog(mFrame, mComp);
-		mPalette_dialog = new PaletteDialog(mFrame, mComp, mPalette, this);
-		mOptions_dialog = new OptionsDialog(mFrame, mComp);
 
 		mComp.SetSuperSampleType(mOptions_dialog.GetSuperSampleType());
 		mComp.SetNumThreads(mOptions_dialog.GetNumThreads());
