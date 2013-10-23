@@ -1,11 +1,5 @@
-import java.io.*;
-import java.net.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.*;
-
-import javax.imageio.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,7 +9,11 @@ import java.awt.Graphics2D;
 import javax.swing.*;
 
 class PaletteDisplay extends JPanel{
-    SFTPalette mPalette;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	SFTPalette mPalette;
     Component mComponent;
 	JFrame pFrame;
 

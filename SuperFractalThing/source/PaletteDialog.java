@@ -667,7 +667,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 //			System.out.format("%n");
 			
 			sFreqScale[i].setValue(s[i][0]);
-			sFreq[i].setValue((int) s[i][1]);
+			sFreq[i].setValue((int) (s[i][1]*sliderScale));
 			sAmp[i].setValue((int) (s[i][2]*sliderScale));
 			sPhase[i].setValue((int) (s[i][3]*sliderScale/(2f*Math.PI)));
 			sOffset[i].setValue((int) (s[i][4]*sliderScale));
@@ -711,7 +711,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		for (int i=0; i<3; i++)
 		{
 			s[i][0] = (double) Float.parseFloat(sFreqScale[i].getText().replace(",",""));
-			s[i][1] = (double) (((Number)(sFreq[i].getValue())).floatValue());
+			s[i][1] = (double) (((Number)(sFreq[i].getValue())).floatValue())/sliderScale;
 			s[i][2] = (double) (((Number)(sAmp[i].getValue())).floatValue())/sliderScale;
 			s[i][3] = (double) 2f*Math.PI*(((Number)(sPhase[i].getValue())).floatValue())/sliderScale;
 			s[i][4] = (double) (((Number)(sOffset[i].getValue())).floatValue())/sliderScale;
