@@ -20,6 +20,8 @@
 //
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 interface IPaletteChangeNotify
 {
@@ -235,7 +237,32 @@ public class SFTPalette implements IPalette
 		return c;
 	}
     
-	public void GetGradientValues(double m[], double pSine[][], Color aColours[])
+    public BufferedImage drawCMap(int cMap, int h, int w) {
+        double co[] = new double[3];
+        int ico[] = new int[3];
+
+        BufferedImage pImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = pImage.createGraphics();
+		for (int i=0; i<=w; i++) {
+			int ii = (int) (SFTComponentmap.colorFrequency*((double)i/w));
+			if (cMap == -1)
+				g2d.setColor(new Color(GetColour(ii)));
+			else if (cMap < NMIXERS) {
+                co = cm[cMap].getColor(ii);
+                co = hsl2rgb(co, false);
+		        for (int ci=0; ci<3; ci++)
+		        	ico[ci] = ((int) (mixerValues[cMap]*co[ci]*255)) & 255;
+				g2d.setColor(new Color(0xff000000+ico[2] + ((ico[1])<<8) + (ico[0]<<16)));
+			}
+			g2d.drawLine(i, 0, i, h);
+		}
+        g2d.drawImage(pImage,0,0,null);
+		g2d.dispose();
+		
+		return pImage;
+    }
+
+    public void GetGradientValues(double m[], double pSine[][], Color aColours[])
 	{
         cm[currentColormap].getValues(pSine);
         for (int i=0; i<NMIXERS; i++)
@@ -599,7 +626,7 @@ class SFTComponentmap
     double sOffset;
     double sShape;
     public int cmapType = -1;
-    public double colorFrequency = 10000f;
+    public static double colorFrequency = 10000f;
 
     public SFTComponentmap() {}
     public double getColor(int i, int mapNumber) {
@@ -691,7 +718,7 @@ class sineSFTComponentmap extends SFTComponentmap
 //		System.out.format("component %d, map %d: sFreqScale = %f%n", i, mapNumber, sFreqScale);    		
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
-            x = computeShape(Math.PI*(x*sFreq*sFreqScale), sShape);
+            x = computeShape(2*Math.PI*(x*sFreq*sFreqScale), sShape);
             co = sOffset + (1-sOffset)*sAmp*(1 + Math.sin(fullPhase + x))/2;
         } else {
             co = sOffset + (1-sOffset)*sAmp;

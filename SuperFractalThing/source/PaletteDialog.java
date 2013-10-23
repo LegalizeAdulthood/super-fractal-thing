@@ -140,6 +140,8 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
     PaletteIO mPalette_io;
     boolean paletteLoaded = false;
     double sliderScale = 1000;
+    
+    PaletteDisplay pDisplay;
 
 	public PaletteDialog (JFrame aFrame, Component aComponent, SFTPalette aPalette, PaletteIO aPalette_io)
 	{
@@ -149,6 +151,8 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		mPalette_io = aPalette_io;
 		
 		mDialog = new JDialog(aFrame, "Edit Palette", false);
+		
+		pDisplay = new PaletteDisplay(mPalette, mComponent);
         
         String[] cComponent = {"Hue", "Saturation", "Luminance"};
         
@@ -510,6 +514,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 //        	System.out.format("stateChanged%n");    		
             setCurrentColormap();
             SetPaletteValues();
+            pDisplay.repaint();
         }
     }
 	
@@ -519,6 +524,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		mInitial_state = mPalette.ToString();
 		GetPaletteValues();
 		mDialog.setVisible(true);
+		pDisplay.show();
 		return mOK;
 	}
 
@@ -694,6 +700,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
         }
         
         paletteLoaded = true;
+        pDisplay.repaint();
 	}
     
 	void SetPaletteValues()

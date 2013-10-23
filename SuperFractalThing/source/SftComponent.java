@@ -193,7 +193,7 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 		mCalculation = calc;
 		
 		double size;
-		BigDecimal bd280 = new BigDecimal(1e-280);
+		BigDecimal bd280 = new BigDecimal(1e-300);
 		if (mSize.compareTo( bd280)<0)
 		{
 			BigDecimal mod_size = mSize;
