@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.image.*;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -15,13 +14,13 @@ class PaletteDisplay extends JPanel{
 	private static final long serialVersionUID = 1L;
 	SFTPalette mPalette;
     Component mComponent;
-	JFrame pFrame;
+    JDialog pFrame;
 
-	public PaletteDisplay(SFTPalette aPalette, Component aComponent) {
+	public PaletteDisplay(SFTPalette aPalette, JFrame aFrame, Component aComponent) {
 		mPalette = aPalette; 
 		mComponent = aComponent;
 		
-		pFrame = new JFrame("Palette Display", null);
+		pFrame = new JDialog(aFrame, "Palette Display", null);
 		pFrame.add(this);
 		pFrame.setSize(800, 600);
 	}

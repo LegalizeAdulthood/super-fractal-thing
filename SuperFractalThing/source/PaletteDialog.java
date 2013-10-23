@@ -152,7 +152,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		
 		mDialog = new JDialog(aFrame, "Edit Palette", false);
 		
-		pDisplay = new PaletteDisplay(mPalette, mComponent);
+		pDisplay = new PaletteDisplay(mPalette, mFrame, mComponent);
         
         String[] cComponent = {"Hue", "Saturation", "Luminance"};
         

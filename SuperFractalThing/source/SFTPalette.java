@@ -46,7 +46,7 @@ public class SFTPalette implements IPalette
     public static final String[] typeNames = {"Sine", "Gaussian", "Linear Ramp", 
     	"Linear Bi-Ramp", "Exp Ramp", "Exp Bi-Ramp", "Stripe", "Undefined"};
 	int mEnd_colour;
-	public static int indexClamp = 0xfff;
+	public static int indexClamp = 0xffff;
     
 	int mColour[];
     double minComponentColor[] = {-1, -1, -1};
@@ -710,7 +710,7 @@ class sineSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.5d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.5d};
         return v;
     }
     
@@ -766,7 +766,7 @@ class linearRampSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.9d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.9d};
         return v;
     }
         
@@ -808,7 +808,7 @@ class linearBiRampSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.9d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.9d};
         return v;
     }
         
@@ -854,7 +854,7 @@ class expRampSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.9d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.9d};
         return v;
     }
     
@@ -899,7 +899,7 @@ class expBiRampSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.9d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.9d};
         return v;
     }
     
@@ -948,7 +948,7 @@ class stripeSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.55d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.55d};
         return v;
     }
     
@@ -1001,7 +1001,7 @@ class gaussianSFTComponentmap extends SFTComponentmap
     }
     
     public double[] getDefaults() {
-        double[] v = {100d, .5d, 1d, 0d, 0d, 0.9d};
+        double[] v = {1000d, .5d, 1d, 0d, 0d, 0.9d};
         return v;
     }
     
