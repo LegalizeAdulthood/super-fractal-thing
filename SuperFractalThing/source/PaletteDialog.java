@@ -678,7 +678,7 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		globalPhaseSlider.setValue((int) (globalPhase*sliderScale/(2f*Math.PI)));
 
 		for (int i=0; i<NMIXERS; i++) {
-			mixerSlider[i].setValue((int) (p[i]*sliderScale));
+			mixerSlider[i].setValue((int) (((p[i]+1)/2)*sliderScale));
         }
         
         mPalette.getCmapType(hslBaseType, hslComponentType);
@@ -731,8 +731,8 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		cMapPhaseLabel.setText(""+round(2f*cMapPhaseSlider.getValue()/sliderScale, 2)+"\u03c0");
 		
         for (int i=0; i<NMIXERS; i++) {
-			p[i] = (double) (((Number)(mixerSlider[i].getValue())).floatValue())/sliderScale;
-            mixerLabel[i].setText(""+round(mixerSlider[i].getValue()/sliderScale, 2));
+			p[i] = (double) 2*((((Number)(mixerSlider[i].getValue())).floatValue())/sliderScale - 0.5);
+            mixerLabel[i].setText(""+round(2*(mixerSlider[i].getValue()/sliderScale - 0.5), 2));
         }
         
         SFTPalette.setGlobalPhase(globalPhase);

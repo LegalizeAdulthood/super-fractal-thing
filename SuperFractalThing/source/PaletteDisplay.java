@@ -34,6 +34,8 @@ class PaletteDisplay extends JPanel{
     	int h = 70;
     	int dh = 10;
     	int w = 700;
+    	double period = 0;
+    	double periodRange = 0;
 
     	BufferedImage pImage;
 
@@ -44,12 +46,22 @@ class PaletteDisplay extends JPanel{
         g2.setColor(Color.black);
         g2.setFont(new Font( "SansSerif", Font.PLAIN, 18 ));
         
-        pImage = mPalette.drawCMap(-1, h, w);
+        double[][] f = mPalette.getCmapFrequencies();
+        double maxFreq = 1e8;
+        for (int i=0; i<SFTPalette.NMIXERS; i++)
+        	for (int j=0; j<3; j++)
+        		if (f[i][j] < maxFreq & f[i][j] > 0)
+        			maxFreq = f[i][j];
+        period = 1/maxFreq;
+        periodRange = 2*period;
+//		System.out.format("periodRange = %f%n", periodRange);    		
+        
+        pImage = mPalette.drawCMap(-1, h, w, periodRange);
         g2.drawString("Mix", 25, 35);
         g2.drawImage(pImage,100,0,null);
         
         for (int i=0; i<SFTPalette.NMIXERS; i++) {
-            pImage = mPalette.drawCMap(i, h, w);
+            pImage = mPalette.drawCMap(i, h, w, periodRange);
             g2.drawString("CMap " + (i+1), 20, 35 + (i+1)*(h + dh));
             g2.drawImage(pImage,100,(i+1)*(h + dh),null);
         	
