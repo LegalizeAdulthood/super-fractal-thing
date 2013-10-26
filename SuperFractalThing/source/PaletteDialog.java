@@ -94,7 +94,7 @@ class ColourButton extends JButton implements ActionListener
 }
 
 
-public class PaletteDialog implements ActionListener, ChangeListener
+public class PaletteDialog implements ActionListener, ChangeListener, PaletteLibraryLoader
 {
     public static final int NMIXERS = 6;
 
@@ -140,6 +140,8 @@ public class PaletteDialog implements ActionListener, ChangeListener
     PaletteIO mPalette_io;
     boolean paletteLoaded = false;
     double sliderScale = 1000;
+    
+    PaletteDisplay pDisplay;
 
 	public PaletteDialog (JFrame aFrame, Component aComponent, SFTPalette aPalette, PaletteIO aPalette_io)
 	{
@@ -149,6 +151,8 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		mPalette_io = aPalette_io;
 		
 		mDialog = new JDialog(aFrame, "Edit Palette", false);
+		
+		pDisplay = new PaletteDisplay(mPalette, mFrame, mComponent);
         
         String[] cComponent = {"Hue", "Saturation", "Luminance"};
         
@@ -510,6 +514,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
 //        	System.out.format("stateChanged%n");    		
             setCurrentColormap();
             SetPaletteValues();
+            pDisplay.repaint();
         }
     }
 	
@@ -519,6 +524,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		mInitial_state = mPalette.ToString();
 		GetPaletteValues();
 		mDialog.setVisible(true);
+		pDisplay.show();
 		return mOK;
 	}
 
@@ -661,7 +667,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
 //			System.out.format("%n");
 			
 			sFreqScale[i].setValue(s[i][0]);
-			sFreq[i].setValue((int) s[i][1]);
+			sFreq[i].setValue((int) (s[i][1]*sliderScale));
 			sAmp[i].setValue((int) (s[i][2]*sliderScale));
 			sPhase[i].setValue((int) (s[i][3]*sliderScale/(2f*Math.PI)));
 			sOffset[i].setValue((int) (s[i][4]*sliderScale));
@@ -672,7 +678,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		globalPhaseSlider.setValue((int) (globalPhase*sliderScale/(2f*Math.PI)));
 
 		for (int i=0; i<NMIXERS; i++) {
-			mixerSlider[i].setValue((int) (p[i]*sliderScale));
+			mixerSlider[i].setValue((int) (((p[i]+1)/2)*sliderScale));
         }
         
         mPalette.getCmapType(hslBaseType, hslComponentType);
@@ -694,6 +700,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
         }
         
         paletteLoaded = true;
+        pDisplay.repaint();
 	}
     
 	void SetPaletteValues()
@@ -704,7 +711,7 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		for (int i=0; i<3; i++)
 		{
 			s[i][0] = (double) Float.parseFloat(sFreqScale[i].getText().replace(",",""));
-			s[i][1] = (double) (((Number)(sFreq[i].getValue())).floatValue());
+			s[i][1] = (double) (((Number)(sFreq[i].getValue())).floatValue())/sliderScale;
 			s[i][2] = (double) (((Number)(sAmp[i].getValue())).floatValue())/sliderScale;
 			s[i][3] = (double) 2f*Math.PI*(((Number)(sPhase[i].getValue())).floatValue())/sliderScale;
 			s[i][4] = (double) (((Number)(sOffset[i].getValue())).floatValue())/sliderScale;
@@ -724,8 +731,8 @@ public class PaletteDialog implements ActionListener, ChangeListener
 		cMapPhaseLabel.setText(""+round(2f*cMapPhaseSlider.getValue()/sliderScale, 2)+"\u03c0");
 		
         for (int i=0; i<NMIXERS; i++) {
-			p[i] = (double) (((Number)(mixerSlider[i].getValue())).floatValue())/sliderScale;
-            mixerLabel[i].setText(""+round(mixerSlider[i].getValue()/sliderScale, 2));
+			p[i] = (double) 2*((((Number)(mixerSlider[i].getValue())).floatValue())/sliderScale - 0.5);
+            mixerLabel[i].setText(""+round(2*(mixerSlider[i].getValue()/sliderScale - 0.5), 2));
         }
         
         SFTPalette.setGlobalPhase(globalPhase);
