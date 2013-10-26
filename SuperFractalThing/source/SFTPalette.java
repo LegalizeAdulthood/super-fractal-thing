@@ -93,8 +93,8 @@ public class SFTPalette implements IPalette
 		if (mPalette[i]!=0)
 			return mPalette[i];
         
-        co = mixColor(i, true);
-
+        co = mixColor(i, true, true);
+    	
         for (int ci=0; ci<3; ci++)
         {
         	if (co[ci] > 1 || co[ci] < 0)
@@ -106,7 +106,7 @@ public class SFTPalette implements IPalette
 		return mPalette[i];
 	}
     
-	public double[] mixColor(int i, boolean doStretch)
+	public double[] mixColor(int i, boolean scale, boolean clip)
 	{
         double co[] = new double[3];
         
@@ -129,19 +129,23 @@ public class SFTPalette implements IPalette
                 co[ci] += mixerValues[m]*fco[m][ci];
         }
 
-        if (maxMixColor[0] > 1 || maxMixColor[1] > 1 || maxMixColor[2] > 1) {
-        	System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
-            for (int ci=0; ci<3; ci++) 
-            	co[ci] /= maxMixColor[ci];
-        }
-        	
-        for (int ci=0; ci<3; ci++) {
-            if (co[ci] < 0)
-            	co[ci] = 0;
-            else if (co[ci] > 1)
-            	co[ci] = 1;
-        }
+        if (scale)
+        	if (maxMixColor[0] > 1 || maxMixColor[1] > 1 || maxMixColor[2] > 1) {
+        		//        	System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
+        		//        	System.out.format("co in: %g, %g, %g%n", co[0], co[1], co[2]);
+        		for (int ci=0; ci<3; ci++) 
+        			co[ci] /= maxMixColor[ci];
+        		//        	System.out.format("co scaled: %g, %g, %g%n", co[0], co[1], co[2]);
+        	}
         
+        if (clip)
+        	for (int ci=0; ci<3; ci++) {
+        		if (co[ci] < 0)
+        			co[ci] = 0;
+        		else if (co[ci] > 1)
+        			co[ci] = 1;
+        	}
+
 		return co;
 	}
     
@@ -159,6 +163,7 @@ public class SFTPalette implements IPalette
                     maxMixColor[p] = colorMapMixArray[p][i];
             }
         }
+//    	System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
     }
 
 	
@@ -208,15 +213,23 @@ public class SFTPalette implements IPalette
 
         BufferedImage pImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = pImage.createGraphics();
+		if (cMap == -1) {
+			for (int i=0; i<=w; i++) {
+				int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/w));
+				//			System.out.format("ii = %d%n", ii);    		
+
+				co =  mixColor(ii, false, false);
+				for (int p=0; p<3; p++)
+					colorMapMixArray[p][i] = co[p];
+			}
+			
+			setColorRanges();
+		}
 		for (int i=0; i<=w; i++) {
 			int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/w));
 //			System.out.format("ii = %d%n", ii);    		
 
 			if (cMap == -1) {
-				co =  mixColor(ii, false);
-            	for (int p=0; p<3; p++)
-            		colorMapMixArray[p][i] = co[p];
-
 				g2d.setColor(new Color(GetColour(ii)));
 			}
 			else if (cMap < NMIXERS) {
