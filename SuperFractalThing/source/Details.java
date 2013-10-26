@@ -35,6 +35,7 @@ public class Details extends Approximation {
 	int mIteration_limit;
 	int mNum_iterations;
 	double mActual_width;
+	double mActual_width_with_exponent_scale;
 	double mAspect_ratio;
 	int mSize_extra_exponent;
 	
@@ -87,6 +88,11 @@ public class Details extends Approximation {
 	{
 		return mActual_width;
 	}
+	double GetActualWidthWithExponentScale()
+	{
+		return mActual_width_with_exponent_scale;
+	}
+	
 	double GetX0()
 	{
 		return mX0;
@@ -195,6 +201,7 @@ public class Details extends Approximation {
 		mIteration_limit = aDetails.mIteration_limit;
 		mNum_iterations = aDetails.mNum_iterations;
 		mActual_width = aDetails.mActual_width;
+		mActual_width_with_exponent_scale= aDetails.mActual_width_with_exponent_scale;
 		mAspect_ratio = aDetails.mAspect_ratio;
 		mSize_extra_exponent = aDetails.mSize_extra_exponent;
 		
@@ -346,7 +353,8 @@ public class Details extends Approximation {
 	{
 		mActual_width = aActual_width;
 		mIteration_limit = aIteration_limit;
-		
+		mActual_width_with_exponent_scale = mActual_width * Math.pow(10, -aSize_extra_exponent);
+
 		mScreen_offset_x = aScreen_offset_x;
 		mScreen_offset_y = aScreen_offset_y;
 		
@@ -391,7 +399,7 @@ public class Details extends Approximation {
 		c = new BigDecimal( aScreen_offset_x * mActual_width, mMath_context );
 		ci = new BigDecimal( aScreen_offset_y * mActual_width, mMath_context );
 		
-		if (aSize_extra_exponent==0)
+		if (aSize_extra_exponent!=0)
 		{
 			double factor = Math.pow(10.0, (double)-aSize_extra_exponent);
 			c = c.multiply( new BigDecimal(factor, mMath_context) );

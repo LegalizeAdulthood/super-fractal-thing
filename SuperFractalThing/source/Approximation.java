@@ -152,8 +152,8 @@ public class Approximation {
 		// new_B = 2*x*B + A*A
 		// new_C = 2*x*C + 2*A*B
 		
-		double delta = aScreen_offset_from_centre_x * aDetails.GetActualWidth();
-		double deltai = aScreen_offset_from_centre_y * aDetails.GetActualWidth();
+		double delta = aScreen_offset_from_centre_x * aDetails.GetActualWidthWithExponentScale();
+		double deltai = aScreen_offset_from_centre_y * aDetails.GetActualWidthWithExponentScale();
 		
 		double tA=A;
 		double tAi=Ai;
@@ -204,7 +204,7 @@ public class Approximation {
 
 			temp = 2*(local_x*tA - local_xi*tAi);
 			tAi = 2*(local_x*tAi + local_xi*tA);
-			tA = temp+aDetails.GetActualWidth();
+			tA = temp+aDetails.GetActualWidthWithExponentScale();
 			
 			asq = tA*tA+tAi*tAi;
 			bsq = tB*tB+tBi*tBi;
@@ -306,8 +306,8 @@ public class Approximation {
 		double dx,dxi;
 		int extra;
 		double x,xi,temp,tempi,dxsq,x2;
-		double delta = (aScreen_delta_x) * aDetails.GetActualWidth();
-		double deltai = (aScreen_delta_y) * aDetails.GetActualWidth();
+		double delta = (aScreen_delta_x) * aDetails.GetActualWidthWithExponentScale();
+		double deltai = (aScreen_delta_y) * aDetails.GetActualWidthWithExponentScale();
 
 		double c = aDetails.GetX0() + delta;
 		double ci = aDetails.GetX0i() + deltai;
