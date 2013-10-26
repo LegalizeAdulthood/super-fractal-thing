@@ -354,7 +354,8 @@ public class Details extends Approximation {
 		mActual_width = aActual_width;
 		mIteration_limit = aIteration_limit;
 		mActual_width_with_exponent_scale = mActual_width * Math.pow(10, -aSize_extra_exponent);
-
+		mSize_extra_exponent = (int)aSize_extra_exponent;
+		
 		mScreen_offset_x = aScreen_offset_x;
 		mScreen_offset_y = aScreen_offset_y;
 		
@@ -840,8 +841,8 @@ public class Details extends Approximation {
 			temp = 2*(x*dx[0] - xi*dx[1]);
 			tempi = 2*(x*dx[1] + xi*dx[0]);
 			
-			double delta = (aPoint_x-mScreen_offset_x+0.5) * GetActualWidth();
-			double deltai = (aPoint_y-mScreen_offset_y) * GetActualWidth();
+			double delta = (aPoint_x-mScreen_offset_x+0.5) * GetActualWidthWithExponentScale();
+			double deltai = (aPoint_y-mScreen_offset_y) * GetActualWidthWithExponentScale();
 	
 			temp += delta;
 			tempi += deltai;
