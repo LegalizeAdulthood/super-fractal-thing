@@ -402,9 +402,11 @@ public class Details extends Approximation {
 		
 		if (aSize_extra_exponent!=0)
 		{
-			double factor = Math.pow(10.0, (double)-aSize_extra_exponent);
-			c = c.multiply( new BigDecimal(factor, mMath_context) );
-			ci = ci.multiply( new BigDecimal(factor, mMath_context) );
+			//double factor = Math.pow(10.0, (double)-aSize_extra_exponent);
+			//c = c.multiply( new BigDecimal(factor, mMath_context) );
+			//ci = ci.multiply( new BigDecimal(factor, mMath_context) );
+			c = c.movePointLeft((int)aSize_extra_exponent);
+			ci = ci.movePointLeft((int)aSize_extra_exponent);
 		}
 		c = c.add(pX);
 		ci = ci.add(pY);
@@ -751,12 +753,11 @@ public class Details extends Approximation {
 		if (aSize_extra_exponent!=0)
 		{
 			p= new BigDecimal(aScreen_offset_x*mActual_width);   //aScreen_offset_x * mActual_width;
-			q=new BigDecimal(Math.pow(10,-aSize_extra_exponent));
-			c = p.multiply(q);
+			c=p.movePointLeft((int)aSize_extra_exponent);
 			c = c.add(pX);
 			
 			p=new BigDecimal(aScreen_offset_y * mActual_width);
-			ci =p.multiply(q);
+			ci=p.movePointLeft((int)aSize_extra_exponent);
 			ci = ci.add(pY);
 			
 		}
