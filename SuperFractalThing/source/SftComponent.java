@@ -116,8 +116,10 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 	@Override
 	public void PaletteChanged()
 	{
+		if (mImage != null) {
 		mImage = mBuffer.MakeTexture(mPalette, mSuper_sample_type);
 		repaint();
+		}
 	}
 	
 	public BufferedImage GetImage()

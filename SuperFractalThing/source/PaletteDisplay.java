@@ -15,6 +15,7 @@ class PaletteDisplay extends JPanel{
 	SFTPalette mPalette;
     Component mComponent;
     JDialog pFrame;
+    public static int pdWidth = 700;
 
 	public PaletteDisplay(SFTPalette aPalette, JFrame aFrame, Component aComponent) {
 		mPalette = aPalette; 
@@ -33,7 +34,7 @@ class PaletteDisplay extends JPanel{
 	public void paint(Graphics g) {
     	int h = 70;
     	int dh = 10;
-    	int w = 700;
+    	int w = pdWidth;
     	double period = 0;
     	double periodRange = 0;
 
@@ -47,10 +48,11 @@ class PaletteDisplay extends JPanel{
         g2.setFont(new Font( "SansSerif", Font.PLAIN, 18 ));
         
         double[][] f = mPalette.getCmapFrequencies();
+        double[][] a = mPalette.getCmapAmplitudes();
         double maxFreq = 1e8;
         for (int i=0; i<SFTPalette.NMIXERS; i++)
         	for (int j=0; j<3; j++)
-        		if (f[i][j] < maxFreq & f[i][j] > 0)
+        		if (f[i][j] < maxFreq & f[i][j] > 0 & a[i][j] > 0)
         			maxFreq = f[i][j];
         period = 1/maxFreq;
         periodRange = 2*period;

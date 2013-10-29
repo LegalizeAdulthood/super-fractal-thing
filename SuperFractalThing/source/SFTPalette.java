@@ -75,6 +75,7 @@ public class SFTPalette implements IPalette
         }
         colorMapMixArray = new double[3][1000];
         mixerValues[0] = 1;
+               
         setColorRanges();
     }
 	
@@ -164,6 +165,8 @@ public class SFTPalette implements IPalette
             }
         }
 //    	System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
+    	if (mNotify != null)
+    		mNotify.PaletteChanged();
     }
 
 	
@@ -216,7 +219,6 @@ public class SFTPalette implements IPalette
 		if (cMap == -1) {
 			for (int i=0; i<=w; i++) {
 				int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/w));
-				//			System.out.format("ii = %d%n", ii);    		
 
 				co =  mixColor(ii, false, false);
 				for (int p=0; p<3; p++)
@@ -227,7 +229,6 @@ public class SFTPalette implements IPalette
 		}
 		for (int i=0; i<=w; i++) {
 			int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/w));
-//			System.out.format("ii = %d%n", ii);    		
 
 			if (cMap == -1) {
 				g2d.setColor(new Color(GetColour(ii)));
@@ -247,9 +248,32 @@ public class SFTPalette implements IPalette
 		}
         g2d.drawImage(pImage,0,0,null);
 		g2d.dispose();
-		
+//    	System.out.format("done drawCMap%n");
+
 		return pImage;
     }
+    
+    public void setMixRange() {
+        double co[] = new double[3];
+    	double[][] f = getCmapFrequencies();
+    	double[][] a = getCmapAmplitudes();
+    	double maxFreq = 1e8;
+    	for (int i=0; i<NMIXERS; i++)
+    		for (int j=0; j<3; j++)
+    			if (f[i][j] < maxFreq & f[i][j] > 0 & a[i][j] > 0)
+    				maxFreq = f[i][j];
+    	
+    	double period = 2/maxFreq;
+    	
+		for (int i=0; i<=PaletteDisplay.pdWidth; i++) {
+			int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/PaletteDisplay.pdWidth));
+
+			co =  mixColor(ii, false, false);
+			for (int p=0; p<3; p++)
+				colorMapMixArray[p][i] = co[p];
+		}	
+		setColorRanges();
+	}
 
     public double[][] getCmapFrequencies() {
     	double[][] f = new double[NMIXERS][3];
@@ -258,6 +282,15 @@ public class SFTPalette implements IPalette
     		if (mixerValues[i] > 0)
     			f[i] = cm[i].getFrequencies();
     	return f;
+    }
+    
+    public double[][] getCmapAmplitudes() {
+    	double[][] a = new double[NMIXERS][3];
+    	
+    	for (int i=0; i<NMIXERS; i++)
+    		if (mixerValues[i] > 0)
+    			a[i] = cm[i].getAmplitudes();
+    	return a;
     }
     
     public void GetGradientValues(double m[], double pSine[][], Color aColours[])
@@ -273,7 +306,7 @@ public class SFTPalette implements IPalette
         cm[currentColormap].setValues(pSine);
         for (int i=0; i<NMIXERS; i++)
             mixerValues[i] = m[i];
-        setColorRanges();
+//        setColorRanges();
 		mPalette = new int[indexClamp];
 		mEnd_colour = aEnd.getRGB() | 0xff000000;
 
@@ -530,6 +563,15 @@ class SFTColormap
     	
         for (int i=0; i<3; i++) 
             v[i] = HSLComponents[i].sFreq * HSLComponents[i].sFreqScale;
+        
+        return v;
+    }
+    
+    public double[] getAmplitudes() {
+    	double[] v = new double[3];
+    	
+        for (int i=0; i<3; i++) 
+            v[i] = HSLComponents[i].sAmp;
         
         return v;
     }

@@ -774,7 +774,12 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		str = String.copyValueOf(arr);
 		
 		mPalette.ParseString(str);
-		
+		paletteLoaded = true;
+				
+        setCurrentColormap();
 		GetPaletteValues();
+        mPalette.setMixRange();
+		SetPaletteValues();
+        pDisplay.repaint();
 	}
 }
