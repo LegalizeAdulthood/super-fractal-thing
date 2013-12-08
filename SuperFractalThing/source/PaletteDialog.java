@@ -40,6 +40,7 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -94,7 +95,7 @@ class ColourButton extends JButton implements ActionListener
 }
 
 
-public class PaletteDialog implements ActionListener, ChangeListener, PaletteLibraryLoader
+public class PaletteDialog implements IPaletteDialog, ChangeListener, PaletteLibraryLoader
 {
     public static final int NMIXERS = 6;
 
@@ -143,9 +144,9 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
     
     PaletteDisplay pDisplay;
 
-	public PaletteDialog (JFrame aFrame, Component aComponent, SFTPalette aPalette, PaletteIO aPalette_io)
+	public PaletteDialog (JFrame aFrame, Component aComponent, IPaletteChangeNotify aNotify, PaletteIO aPalette_io)
 	{
-		mPalette = aPalette;
+		mPalette = new SFTPalette(aNotify);
 		mComponent = aComponent;
 		mFrame = aFrame;
 		mPalette_io = aPalette_io;
@@ -497,7 +498,17 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
         mOK_button.addActionListener(this);       	
 
 	}
-    
+	
+	public IPalette GetPalette()
+	{
+		return mPalette;
+	}
+	   
+	public void MakePaletteLibrary(JMenuBar aMenuBar)
+	{
+		new PaletteLibrary(aMenuBar, this);	
+	}
+
 /*
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider)e.getSource();

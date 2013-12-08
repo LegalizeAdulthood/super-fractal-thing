@@ -25,7 +25,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+//import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +41,7 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 /*
@@ -92,7 +93,7 @@ class ColourButton extends JButton implements ActionListener
 }
 
 */
-public class PaletteDialogOld implements ActionListener
+public class PaletteDialogOld implements IPaletteDialog
 {
 JDialog mDialog;
 JFormattedTextField md_di[][];
@@ -116,9 +117,9 @@ JFormattedTextField mBand_period[];
 ColourButton mBand_modulate[];
 ColourButton mBand_offset[];
 
-	public PaletteDialogOld(JFrame aFrame, Component aComponent, SFTPaletteOld aPalette, PaletteIO aPalette_io)
+	public PaletteDialogOld(JFrame aFrame, Component aComponent, IPaletteChangeNotify aNotify, PaletteIO aPalette_io)
 	{
-		mPalette = aPalette;
+		mPalette = new SFTPaletteOld(aNotify);
 		mComponent = aComponent;
 		mFrame = aFrame;
 		mPalette_io = aPalette_io;
@@ -417,6 +418,16 @@ ColourButton mBand_offset[];
 
 			mPalette_io.SavePalette(str);
 		}		
+	}
+	
+	public IPalette GetPalette()
+	{
+		return mPalette;
+	}
+	
+	public void MakePaletteLibrary(JMenuBar aMenuBar)
+	{
+		//Not implemented
 	}
 	
 	void GetPaletteValues()

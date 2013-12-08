@@ -60,7 +60,12 @@ import java.text.DecimalFormat;
 import java.text.AttributedCharacterIterator;
 import java.text.ParsePosition;
 
-
+interface IPaletteDialog extends ActionListener
+{
+	public boolean Run();
+	public IPalette GetPalette();
+	public void MakePaletteLibrary(JMenuBar aMenuBar);
+}
 
 
 public class SuperFractalThing  extends JApplet implements SFTGui, ActionListener, LibraryLoader, PaletteIO
@@ -87,9 +92,9 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	JLabel mTime_label;
 	JMenuBar mMenu_bar;
 	ExportDialog mDialog;
-	PaletteDialog mPalette_dialog;
+	IPaletteDialog mPalette_dialog;
 	OptionsDialog mOptions_dialog;
-	SFTPalette mPalette;
+	IPalette mPalette;
 	UndoBuffer mUndo_buffer;
 	JMenuItem mRedo_item;
 	JMenuItem mUndo_item;
@@ -498,8 +503,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         gbc.gridwidth=8;
         //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         mComp = new SftComponent(this);
-        mPalette = new SFTPalette(mComp);
-        mComp.SetPalette( mPalette );
         
         p.add(mComp,gbc);
 
@@ -607,11 +610,15 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         mTime_label =new JLabel("", null, JLabel.CENTER);
         p.add(mTime_label, gbc);   
 
-        mComp.CreateImage();
 
 		mDialog = new ExportDialog(mFrame, mComp);
-		mPalette_dialog = new PaletteDialog(mFrame, mComp, mPalette, this);
+		//mPalette_dialog = new PaletteDialogOld(mFrame, mComp, mComp, this);
+		mPalette_dialog = new PaletteDialog(mFrame, mComp, mComp, this);
+		mPalette = mPalette_dialog.GetPalette();
+		mComp.SetPalette(mPalette);
 		mOptions_dialog = new OptionsDialog(mFrame, mComp);
+
+		mComp.CreateImage();
         
  	   //Menu bar
 	    JMenuBar menuBar = new JMenuBar();
@@ -668,7 +675,8 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         menuBar.add(navigate);
         
        	mLibrary = new PositionLibrary(menuBar, this);
-       	pLibrary = new PaletteLibrary(menuBar, mPalette_dialog);
+       	mPalette_dialog.MakePaletteLibrary(menuBar);
+       	//pLibrary = new PaletteLibrary(menuBar, mPalette_dialog);
 
        	setJMenuBar(menuBar);
 	    mMenu_bar = menuBar;
