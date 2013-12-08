@@ -613,9 +613,13 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 			if (str!=null)
 			{
 				mPalette.ParseString(str);
-				
+				paletteLoaded = true;
+						
+		        setCurrentColormap();
 				GetPaletteValues();
-			
+		        mPalette.setMixRange();
+				SetPaletteValues();
+		        pDisplay.repaint();			
 			}
 		}
 		else if (command=="Save")
@@ -682,14 +686,14 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
         }
         
         mPalette.getCmapType(hslBaseType, hslComponentType);
-//        System.out.format("currentCmap = %d, hslBaseType = %d, prevHslBaseType = %d%n", currentCmap, hslBaseType[currentCmap], prevHslBaseType[currentCmap]);
+//        System.out.format("GetPaletteValues: currentCmap = %d, hslBaseType = %d, prevHslBaseType = %d%n", currentCmap, hslBaseType[currentCmap], prevHslBaseType[currentCmap]);
 //		for (int i=0; i<3; i++)
 //	        System.out.format("component %d type = %d%n", i, hslComponentType[currentCmap][i]);
         if (hslBaseType[currentCmap] != prevHslBaseType[currentCmap]) {
 //            System.out.format("setting menus%n");
 
         	hslTypeMenu.setSelectedIndex(hslBaseType[currentCmap]);
-        	if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
+//        	if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
         		for (int i=0; i<3; i++)
         			colorComponentTypeMenu[i].setSelectedIndex(hslComponentType[currentCmap][i]);
             prevHslBaseType[currentCmap] = hslBaseType[currentCmap];
@@ -732,7 +736,9 @@ public class PaletteDialog implements ActionListener, ChangeListener, PaletteLib
 		
         for (int i=0; i<NMIXERS; i++) {
 			p[i] = (double) 2*((((Number)(mixerSlider[i].getValue())).floatValue())/sliderScale - 0.5);
-            mixerLabel[i].setText(""+round(2*(mixerSlider[i].getValue()/sliderScale - 0.5), 2));
+			if (Math.abs(p[i]) < 0.005)
+				p[i] = 0;
+            mixerLabel[i].setText(""+round(p[i], 2));
         }
         
         SFTPalette.setGlobalPhase(globalPhase);

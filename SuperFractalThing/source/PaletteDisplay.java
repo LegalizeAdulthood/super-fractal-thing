@@ -16,6 +16,8 @@ class PaletteDisplay extends JPanel{
     Component mComponent;
     JDialog pFrame;
     public static int pdWidth = 700;
+    public static int pdScaledWidth = 700;
+    public static int pdHeight = 420;
 
 	public PaletteDisplay(SFTPalette aPalette, JFrame aFrame, Component aComponent) {
 		mPalette = aPalette; 
@@ -23,7 +25,7 @@ class PaletteDisplay extends JPanel{
 		
 		pFrame = new JDialog(aFrame, "Palette Display", null);
 		pFrame.add(this);
-		pFrame.setSize(800, 600);
+		pFrame.setSize(pdWidth, pdHeight);
 	}
 	
 	public void show() {
@@ -31,12 +33,23 @@ class PaletteDisplay extends JPanel{
 		pFrame.setVisible(true);
 	}
 	
+	public static int getScaledWidth() {
+		return pdScaledWidth;
+	}
+	
 	public void paint(Graphics g) {
-    	int h = 70;
+    	int h = 50;
     	int dh = 10;
     	int w = pdWidth;
     	double period = 0;
     	double periodRange = 0;
+    	
+    	int wHeight = pFrame.getHeight();
+    	int wWidth = pFrame.getWidth();
+    	double hScale = ((double) wHeight - 40)/pdHeight;
+    	w = (int) (pdWidth*((double) wWidth)/800);
+    	pdScaledWidth = w;
+//		System.out.format("window size = %d, %d%n", wSize.width, wSize.height);    		
 
     	BufferedImage pImage;
 
@@ -58,14 +71,14 @@ class PaletteDisplay extends JPanel{
         periodRange = 2*period;
 //		System.out.format("periodRange = %f%n", periodRange);    		
         
-        pImage = mPalette.drawCMap(-1, h, w, periodRange);
-        g2.drawString("Mix", 25, 35);
+        pImage = mPalette.drawCMap(-1, (int)(hScale*h), w, periodRange);
+        g2.drawString("Mix", 25, (int)(hScale*35));
         g2.drawImage(pImage,100,0,null);
         
         for (int i=0; i<SFTPalette.NMIXERS; i++) {
-            pImage = mPalette.drawCMap(i, h, w, periodRange);
-            g2.drawString("CMap " + (i+1), 20, 35 + (i+1)*(h + dh));
-            g2.drawImage(pImage,100,(i+1)*(h + dh),null);
+            pImage = mPalette.drawCMap(i, (int)(hScale*h), w, periodRange);
+            g2.drawString("CMap " + (i+1), 20, (int)(hScale*(35 + (i+1)*(h + dh))));
+            g2.drawImage(pImage,100,(int)(hScale*((i+1)*(h + dh))),null);
         	
         }
     	

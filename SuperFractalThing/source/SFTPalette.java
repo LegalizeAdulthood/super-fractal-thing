@@ -132,11 +132,14 @@ public class SFTPalette implements IPalette
 
         if (scale)
         	if (maxMixColor[0] > 1 || maxMixColor[1] > 1 || maxMixColor[2] > 1) {
-        		//        	System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
-        		//        	System.out.format("co in: %g, %g, %g%n", co[0], co[1], co[2]);
+//        		System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
+//        		System.out.format("co in: %g, %g, %g%n", co[0], co[1], co[2]);
         		for (int ci=0; ci<3; ci++) 
         			co[ci] /= maxMixColor[ci];
-        		//        	System.out.format("co scaled: %g, %g, %g%n", co[0], co[1], co[2]);
+//        		if (co[0] > 1 || co[1] > 1 || co[2] > 1) {
+//        			System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
+//        			System.out.format("co scaled: %g, %g, %g%n", co[0], co[1], co[2]);
+//        		}
         	}
         
         if (clip)
@@ -265,8 +268,8 @@ public class SFTPalette implements IPalette
     	
     	double period = 2/maxFreq;
     	
-		for (int i=0; i<=PaletteDisplay.pdWidth; i++) {
-			int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/PaletteDisplay.pdWidth));
+		for (int i=0; i<=PaletteDisplay.getScaledWidth(); i++) {
+			int ii = (int) (SFTComponentmap.colorFrequency*period*((double)i/PaletteDisplay.getScaledWidth()));
 
 			co =  mixColor(ii, false, false);
 			for (int p=0; p<3; p++)
