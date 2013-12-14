@@ -319,7 +319,6 @@ public class SftComponent extends Component implements MouseInputListener, Runna
     
 	void SetMaxIterations()
 	{
-		mMax_iterations = mGui.GetIterations();
 		if (mCalculation!=null)
 		{
 			if (mMax_iterations != mGui.GetIterations())
@@ -329,6 +328,10 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 				mMax_iterations= Math.max(mMax_iterations, mCalculation.GetNewLimit());
 				mGui.SetIterations(mMax_iterations);
 			}
+		}
+		else
+		{
+			mMax_iterations = mGui.GetIterations();
 		}
 	}
 	
