@@ -612,8 +612,8 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
 
 		mDialog = new ExportDialog(mFrame, mComp);
-		//mPalette_dialog = new PaletteDialogOld(mFrame, mComp, mComp, this);
-		mPalette_dialog = new PaletteDialog(mFrame, mComp, mComp, this);
+		mPalette_dialog = new PaletteDialogOld(mFrame, mComp, mComp, this);
+		//mPalette_dialog = new PaletteDialog(mFrame, mComp, mComp, this);
 		mPalette = mPalette_dialog.GetPalette();
 		mComp.SetPalette(mPalette);
 		mOptions_dialog = new OptionsDialog(mFrame, mComp);

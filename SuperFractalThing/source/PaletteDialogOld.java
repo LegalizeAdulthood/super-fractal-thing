@@ -124,7 +124,7 @@ ColourButton mBand_offset[];
 		mFrame = aFrame;
 		mPalette_io = aPalette_io;
 		
-		mDialog = new JDialog(aFrame, "Edit Palette", true);
+		mDialog = new JDialog(aFrame, "Edit Palette", false);
 		md_di = new JFormattedTextField[3][2];
 		mDecay = new JFormattedTextField[3];
 		
