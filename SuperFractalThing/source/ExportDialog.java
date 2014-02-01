@@ -141,7 +141,7 @@ Component mComponent;
         gbc.gridx=1;
         String options[] = {"None","x2","x4","x4 9 sample","x9"};
         mSuper_sample = new JComboBox<String>(options);
-        mSuper_sample.setSelectedIndex(2);
+        mSuper_sample.setSelectedIndex(4);
         p.add(mSuper_sample,gbc);
         
         gbc.gridx=0;
