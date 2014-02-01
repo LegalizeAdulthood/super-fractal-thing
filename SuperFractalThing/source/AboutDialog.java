@@ -87,14 +87,14 @@ URI mUri;
         label.setPreferredSize(new Dimension(250,40));
         p.add(label,gbc);
         
-        gbc.gridx=0;
+ /*      gbc.gridx=0;
         gbc.gridy++;
         gbc.gridwidth=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         label=new JLabel("Palette Editor by Steve Bryson", null, JLabel.LEFT);
         label.setPreferredSize(new Dimension(250,40));
         p.add(label,gbc);
-
+*/
         gbc.gridx=0;
         gbc.gridy++;
         gbc.gridwidth=1;
