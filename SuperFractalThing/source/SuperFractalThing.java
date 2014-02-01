@@ -617,7 +617,8 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		mPalette = mPalette_dialog.GetPalette();
 		mComp.SetPalette(mPalette);
 		mOptions_dialog = new OptionsDialog(mFrame, mComp);
-
+		mOptions_dialog.SetSuperSampleType(SuperSampleType.SUPER_SAMPLE_2X);
+		mComp.SetSuperSampleType(mOptions_dialog.GetSuperSampleType());
 		mComp.CreateImage();
         
  	   //Menu bar

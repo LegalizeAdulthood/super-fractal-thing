@@ -245,9 +245,7 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 		int expo=0;
 		
 		precision = scale -precision + 8;
-		
-		mSuper_sample_type = SuperSampleType.SUPER_SAMPLE_2X;
-		
+				
 		switch (mSuper_sample_type)
 		{
 		case SUPER_SAMPLE_NONE:

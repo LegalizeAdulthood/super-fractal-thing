@@ -95,7 +95,7 @@ public class OptionsDialog implements ActionListener
         String[] options = {"None", "x2","x4","x4 9 sample","x9"};
         mSuper_sample = new JComboBox<String>(options);
         mSuper_sample.setPreferredSize(new Dimension(150,20));
-        mSuper_sample.setSelectedIndex(1);
+        mSuper_sample.setSelectedIndex(0);
         p.add(mSuper_sample, gbc);       
   
         gbc.ipady=0;
@@ -139,6 +139,27 @@ public class OptionsDialog implements ActionListener
 			return SuperSampleType.SUPER_SAMPLE_9X;
 		default:
 			return SuperSampleType.SUPER_SAMPLE_NONE;
+		}
+	}
+	public void SetSuperSampleType(SuperSampleType aType)
+	{
+		switch (aType)
+		{
+		case SUPER_SAMPLE_NONE:
+			mSuper_sample.setSelectedIndex(0);
+			break;
+		case SUPER_SAMPLE_2X:
+			mSuper_sample.setSelectedIndex(1);
+			break;
+		case SUPER_SAMPLE_4X:
+			mSuper_sample.setSelectedIndex(2);
+			break;
+		case SUPER_SAMPLE_4X_9:
+			mSuper_sample.setSelectedIndex(3);
+			break;
+		case SUPER_SAMPLE_9X:
+			mSuper_sample.setSelectedIndex(4);
+			break;
 		}
 	}
 	public boolean Run()
