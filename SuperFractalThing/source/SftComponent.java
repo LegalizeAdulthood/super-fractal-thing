@@ -324,13 +324,13 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 			else
 			{
 				mMax_iterations= Math.max(mMax_iterations, mCalculation.GetNewLimit());
-				mGui.SetIterations(mMax_iterations);
 			}
 		}
 		else
 		{
 			mMax_iterations = mGui.GetIterations();
 		}
+		mGui.SetIterations(mMax_iterations);
 	}
 	
 	@Override
