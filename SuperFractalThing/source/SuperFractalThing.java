@@ -189,7 +189,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 			str="s="+half_size.toString()+"\n";
 			str+="r="+mPos_x_box.getText()+"\n";
 			str+="i="+mPos_y_box.getText()+"\n";
-			str+="iteration_limit="+mIterations_box.getText().replaceAll(",", "")+"\n";
+			str+="iteration_limit="+mIterations_box.getValue()+"\n";
 
 			
 			SaveFile(str);
@@ -475,14 +475,10 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	}
 	public int GetIterations()
 	{
-		String str = mIterations_box.getText().replaceAll(",", "");
-		str = str.replaceAll(" ", "");
-		str = str.replaceAll("\\.", "");
-		return Integer.parseInt(str);
+		return ((Number) mIterations_box.getValue()).intValue();
 	}
 	public void SetIterations(int aValue)
 	{
-//		mIterations_box.setText(Integer.toString(aValue));
 		mIterations_box.setValue(aValue);
 	}
 	public BigDecimal[] GetCoords()
@@ -612,8 +608,8 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
 
 		mDialog = new ExportDialog(mFrame, mComp);
-		//mPalette_dialog = new PaletteDialogOld(mFrame, mComp, mComp, this);
-		mPalette_dialog = new PaletteDialog(mFrame, mComp, mComp, this);
+		mPalette_dialog = new PaletteDialogOld(mFrame, mComp, mComp, this);
+		//mPalette_dialog = new PaletteDialog(mFrame, mComp, mComp, this);
 		mPalette = mPalette_dialog.GetPalette();
 		mComp.SetPalette(mPalette);
 		mOptions_dialog = new OptionsDialog(mFrame, mComp);

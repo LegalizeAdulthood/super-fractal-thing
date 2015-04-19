@@ -124,7 +124,7 @@ ColourButton mBand_offset[];
 		mFrame = aFrame;
 		mPalette_io = aPalette_io;
 		
-		mDialog = new JDialog(aFrame, "Edit Palette", true);
+		mDialog = new JDialog(aFrame, "Edit Palette", false);
 		md_di = new JFormattedTextField[3][2];
 		mDecay = new JFormattedTextField[3];
 		
@@ -465,8 +465,8 @@ ColourButton mBand_offset[];
 		
 		for (int i=0; i<3; i++)
 		{
-			p[i][0] = Float.parseFloat(md_di[i][0].getText());
-			p[i][1] = Float.parseFloat(md_di[i][1].getText());
+			p[i][0] = ((Number) md_di[i][0].getValue()).floatValue();
+			p[i][1] = ((Number) md_di[i][1].getValue()).floatValue();
 			p[i][2] = ((Number)(mDecay[i].getValue())).floatValue();	
 		}
 		
@@ -474,9 +474,9 @@ ColourButton mBand_offset[];
 		
 		for (int i=0; i<NUM_BANDS; i++)
 		{
-			band[0] = Integer.parseInt(mBand_start[i].getText().replace(",",""));
-			band[1] = Integer.parseInt(mBand_length[i].getText().replace(",",""));
-			band[2] = Integer.parseInt(mBand_period[i].getText().replace(",",""));
+			band[0] = ((Number) mBand_start[i].getValue()).intValue();
+			band[1] = ((Number) mBand_length[i].getValue()).intValue();
+			band[2] = ((Number) mBand_period[i].getValue()).intValue();
 			
 			band[3] = mBand_offset[i].GetColour().getRed();
 			band[4] = mBand_offset[i].GetColour().getGreen();
