@@ -167,7 +167,6 @@ Component mComponent;
         mCancel_button.addActionListener(this);       
 
         gbc.gridx=1;
-        //gbc.gridy=6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth=1;
         mOK_button = new JButton("OK");

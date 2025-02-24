@@ -372,12 +372,6 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 			mPosi = mPosi.stripTrailingZeros();
 			mSize = mSize.stripTrailingZeros();
 			
-			
-			//mPos = mPos.add( new BigDecimal((x) * mSize/mResolution_y - mSize*mResolution_x/mResolution_y/2) );
-			//mPosi = mPosi.add( new BigDecimal((mResolution_y/2-y) * mSize/mResolution_y));
-			//mSize *= 0.2;
-			
-			//mSize_box.setText(Double.toString(mSize));
 			mGui.SetCoords(mSize,mPos,mPosi, mMax_iterations);
 			
 			mGui.AddToUndoBuffer();
@@ -419,9 +413,6 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 						mPosi = mPosi.stripTrailingZeros();
 						mSize = mSize.stripTrailingZeros();
 						
-						//mPos = mPos.add( new BigDecimal((mSelected_x) * mSize/mResolution_y - mSize*mResolution_x/mResolution_y/2) );
-						//mPosi = mPosi.add( new BigDecimal((mResolution_y/2-mSelected_y) * mSize/mResolution_y));
-						//mSize *= mDragged_size/1024.0;
 						mGui.SetCoords(mSize,mPos,mPosi, mMax_iterations);
 						mGui.AddToUndoBuffer();
 						DoCalculation();
@@ -529,7 +520,6 @@ public class SftComponent extends Component implements MouseInputListener, Runna
 			{
 		        mImage = mBuffer.MakeTexture(mPalette, mSuper_sample_type);
 				repaint();
-				//mMax_iterations = mCalculation.GetNewLimit();
 			}
 			mTimer.stop();
 			mGui.EndProcessing();

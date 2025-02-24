@@ -21,7 +21,6 @@
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-//import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -124,9 +123,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
 	public void start()
 	{
-	   // init();
-	    
-
 		mUndo_buffer = new UndoBuffer();
 	    initComponents();	
 		mPalette_dialog.Run();
@@ -184,7 +180,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 			String str;
 			BigDecimal half = new BigDecimal(0.5);
 			BigDecimal half_size =  GetTheSize().multiply(half);
-			//size*=0.5f;
 			
 			str="s="+half_size.toString()+"\n";
 			str+="r="+mPos_x_box.getText()+"\n";
@@ -209,8 +204,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		}
 		else if (command=="Export PNG")
 		{
-			
-			//ExportDialog dialog = new ExportDialog(mFrame, mComp);
 			boolean res = mDialog.Run();
 			if (!res)
 				return;
@@ -237,32 +230,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 				return;
 			};
 			
-/*			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			try {
-				ImageIO.write(mComp.GetImage(),"PNG",bos);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				return;
-			}
-
-			FileSaveService fss; 
-		    try { 
-		        fss = (FileSaveService)ServiceManager.lookup("javax.jnlp.FileSaveService"); 
-		    } catch (UnavailableServiceException e) { 
-		        fss = null; 
-		        return;
-		    } 
-		    
-		    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		    String[] exts={"png"};
-			try {
-				fss.saveFileDialog(null,exts,bis,"sft_exp.png");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-*/		}
+		}
 		else if (command=="Refresh")
 		{
 			mComp.Refresh();
@@ -270,7 +238,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 		}		    
 		else if (command=="About")
 		{
-			//JOptionPane.showMessageDialog(mFrame, "Abitrary(ish) precision Mandelbrot set rendering in Java.\n\nVersion 0.1\n\n(c) Kevin Martin","SuperFractalThing Java",JOptionPane.PLAIN_MESSAGE);
 			AboutDialog ad = new AboutDialog(mFrame,mComp);
 			ad.Run();
 		}
@@ -436,8 +403,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 			
 			if (line1.startsWith("s=") && line2.startsWith("r=") && line3.startsWith("i=") && line4.startsWith("iteration_limit="))
 			{
-				//double size = Double.parseDouble(line1.substring(2));
-				//mSize_box.setText(Double.toString(size*2));
 				BigDecimal size = new BigDecimal(line1.substring(2));
 				size = size.add(size);
 				mSize_box.setText(size.toString());
@@ -490,14 +455,12 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 	}
     public void initComponents()
     {     
-        //setLayout(new BorderLayout());
         JPanel p = new JPanel();
         p.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx=0;
         gbc.gridy=0;
         gbc.gridwidth=8;
-        //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         mComp = new SftComponent(this);
         
         p.add(mComp,gbc);
@@ -542,11 +505,9 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         gbc.gridx=1;
         gbc.gridwidth=2; 
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        //DecimalFormat format = new DecimalFormat("#.#####E0");
         mSize = new BigDecimal(1.5);
         mSize_box = new JFormattedTextField(size_format);
         mSize_box.setPreferredSize(new Dimension(400,20));
-        //mSize_box.setAlignmentY(1);
         p.add(mSize_box, gbc);
  
         gbc.gridx=6;
@@ -565,11 +526,9 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         gbc.gridx=1;
         gbc.gridwidth=7;
        
-        //f2.setMaximumFractionDigits(1000);
         mPos_x = new BigDecimal(-0.5);
         mPos_x_box = new JFormattedTextField(f2);
         mPos_x_box.setPreferredSize(new Dimension(200,20));
-        //mPos_x_box.setAlignmentY(1);
         p.add(mPos_x_box, gbc);
         
         gbc.gridx=0;
@@ -583,7 +542,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         mPos_y = new BigDecimal(0);
         mPos_y_box = new JFormattedTextField(f2);
         mPos_y_box.setPreferredSize(new Dimension(200,20));
-        //mPos_y_box.setAlignmentY(1);
         p.add(mPos_y_box, gbc);   
  
         
@@ -595,7 +553,7 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
         gbc.gridx=1;
         gbc.gridwidth=4;
-        NumberFormat iformat = NumberFormat.getInstance();// new DecimalFormat("#################");
+        NumberFormat iformat = NumberFormat.getInstance();
         mIterations_box = new JFormattedTextField(iformat);
         mIterations_box.setPreferredSize(new Dimension(400,20));
         p.add(mIterations_box, gbc);   
@@ -609,7 +567,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
 
 		mDialog = new ExportDialog(mFrame, mComp);
 		mPalette_dialog = new PaletteDialogOld(mFrame, mComp, mComp, this);
-		//mPalette_dialog = new PaletteDialog(mFrame, mComp, mComp, this);
 		mPalette = mPalette_dialog.GetPalette();
 		mComp.SetPalette(mPalette);
 		mOptions_dialog = new OptionsDialog(mFrame, mComp);
@@ -673,7 +630,6 @@ public class SuperFractalThing  extends JApplet implements SFTGui, ActionListene
         
        	mLibrary = new PositionLibrary(menuBar, this);
        	mPalette_dialog.MakePaletteLibrary(menuBar);
-       	//pLibrary = new PaletteLibrary(menuBar, mPalette_dialog);
 
        	setJMenuBar(menuBar);
 	    mMenu_bar = menuBar;
@@ -789,7 +745,6 @@ class BigDecimalFormatter extends NumberFormatter
 
 	BigDecimalFormatter()
 	{
-		//setAllowsInvalid(false);
 	}
 	
 	public Object stringToValue(String text) //throws ParseException

@@ -66,10 +66,6 @@ class Stats implements IStats
 	}
 	public int GetNewLimit()
 	{
-		//int num_out_of_set = mCount.get() - mNum_in_set.get();
-		//float fraction1 = (mCounts[15].floatValue()) / num_out_of_set;
-		//float fraction2 = (mCounts[14].floatValue()) / num_out_of_set;
-
 		if (mCounts[15].get() > mNum_in_set.get() || 2000 * mCounts[15].get() > mCount.get() || (mCounts[15].get()>50 && mCounts[15].get() > mCounts[14].get()*0.5f))
 		{
 			float ratio = mCounts[15].floatValue() / mCounts[14].floatValue();
@@ -165,7 +161,7 @@ public class CalculationManager implements Runnable
 				break;
 			case 1:
 				mAccuracy=1;
-				mDo_repeaters=false;//true;
+				mDo_repeaters=false;
 				break;
 			case 2:
 				mAccuracy=0.1;
@@ -290,7 +286,6 @@ public class CalculationManager implements Runnable
 	//
 	void SubCalculate(float aScreen_width, Approximation pApprox, IndexBuffer2D pBuffer, Details aSecondary_details)
 	{
-	//float size;
 	Approximation approx;
 	IndexBuffer2D sub_buffer;
 	int x[]= new int[3], y[]=new int[3];
@@ -307,7 +302,6 @@ public class CalculationManager implements Runnable
 		//A,B,C use screen offset from p to approximation centre
 	
 		float xdenom = 1.0f/pBuffer.GetWidth();
-		//float ydenom = 1.0f/pBuffer->GetHeight();
 		
 		
 		float corner_x = -aScreen_width/2;
@@ -331,7 +325,6 @@ public class CalculationManager implements Runnable
 			if (corner_x > secondary_offset_x + secondary_radius ||
 				corner_x + aScreen_width < secondary_offset_x - secondary_radius ||
 				corner_y > secondary_offset_y + secondary_radius ||
-				//corner_y + aScreen_width *pBuffer.GetHeight() / pBuffer.GetWidth() < secondary_offset_y - secondary_radius)//This works, but rearrange to remove divide
 				 aScreen_width *pBuffer.GetHeight() < (secondary_offset_y - secondary_radius - corner_y) * pBuffer.GetWidth())
 			{
 				aSecondary_details = null;
@@ -341,7 +334,6 @@ public class CalculationManager implements Runnable
 		if (pBuffer.GetWidth()<=3 && pBuffer.GetHeight()<=3)
 		{
 			float xdelta = aScreen_width / pBuffer.GetWidth();
-			//float ydelta = aScreen_width * pBuffer->GetHeight()/pBuffer->GetWidth() / pBuffer->GetHeight();
 			float ydelta = aScreen_width /pBuffer.GetWidth();
 			corner_x += xdelta/2;
 			corner_y += ydelta/2;
@@ -364,7 +356,6 @@ public class CalculationManager implements Runnable
 					value = pApprox.CalculateIterations( mCentre_details, corner_x+xdelta*ix, corner_y + ydelta * iy );
 					UpdateStats(value);
 					pBuffer.Set(ix,iy,value);
-					//pBuffer->Set(ix,iy, pBuffer->GetHeight()*5+ pBuffer->GetWidth()+1);
 				}
 				
 			if (mSuper_sample == SuperSampleType.SUPER_SAMPLE_2X)
@@ -392,7 +383,6 @@ public class CalculationManager implements Runnable
 						value = pApprox.CalculateIterations( mCentre_details, corner_x+xdelta*ix, corner_y + ydelta * iy );
 						UpdateStats(value);
 						pBuffer.Set(ix,iy+mAdjusted_height,value);
-						//pBuffer->Set(ix,iy, pBuffer->GetHeight()*5+ pBuffer->GetWidth()+1);
 					}
 			}
 			return;
@@ -510,44 +500,7 @@ public class CalculationManager implements Runnable
 
 		if (mCentre_details.GetIsARepeater())
 		{
-/*			int ix,iy;
-			int value;
-			float xdelta = xdenom * 2;
-			float ydelta = xdelta;
-
-			corner_x += xdelta/2;
-			corner_y += ydelta/2;
-
-			corner_x += x0*xdelta;
-			corner_y += y0*ydelta;
-			
-			
-			for (iy=0; iy<sub_buffer.GetHeight(); iy++)
-				for (ix=0; ix<sub_buffer.GetWidth(); ix++)
-				{
-					value = mCentre_details.CalculateIterationsRepeater( mCentre_details, corner_x+xdelta*ix, corner_y + ydelta * iy );
-					UpdateStats(value);
-					sub_buffer.Set(ix,iy,value);
-					//pBuffer->Set(ix,iy, pBuffer->GetHeight()*5+ pBuffer->GetWidth()+1);
-				}	
-			
-			if (mSuper_sample==SUPER_SAMPLE_2X)
-			{
-				corner_x -= xdelta/2;
-				corner_y -= ydelta/2;
-				int ylimit = sub_buffer.GetHeight();
-				if (y1 == adjusted_height)
-					ylimit-=1;
-				for (iy=0; iy<ylimit; iy++)
-					for (ix=0; ix<sub_buffer.GetWidth(); ix++)
-					{
-						value = mCentre_details.CalculateIterationsRepeater( mCentre_details, corner_x+xdelta*ix, corner_y + ydelta * iy );
-						UpdateStats(value);
-						sub_buffer.Set(ix,iy+mAdjusted_height,value);
-						//pBuffer->Set(ix,iy, pBuffer->GetHeight()*5+ pBuffer->GetWidth()+1);
-					}	
-			}
-*/		}
+		}
 		else
 		{
 			//Calculate centre of sector

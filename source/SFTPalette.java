@@ -132,14 +132,8 @@ public class SFTPalette implements IPalette
 
         if (scale)
         	if (maxMixColor[0] > 1 || maxMixColor[1] > 1 || maxMixColor[2] > 1) {
-//        		System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
-//        		System.out.format("co in: %g, %g, %g%n", co[0], co[1], co[2]);
         		for (int ci=0; ci<3; ci++) 
         			co[ci] /= maxMixColor[ci];
-//        		if (co[0] > 1 || co[1] > 1 || co[2] > 1) {
-//        			System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
-//        			System.out.format("co scaled: %g, %g, %g%n", co[0], co[1], co[2]);
-//        		}
         	}
         
         if (clip)
@@ -167,7 +161,6 @@ public class SFTPalette implements IPalette
                     maxMixColor[p] = colorMapMixArray[p][i];
             }
         }
-//    	System.out.format("maxMixColor: %g, %g, %g%n", maxMixColor[0], maxMixColor[1], maxMixColor[2]);
     	if (mNotify != null)
     		mNotify.PaletteChanged();
     }
@@ -251,7 +244,6 @@ public class SFTPalette implements IPalette
 		}
         g2d.drawImage(pImage,0,0,null);
 		g2d.dispose();
-//    	System.out.format("done drawCMap%n");
 
 		return pImage;
     }
@@ -309,7 +301,6 @@ public class SFTPalette implements IPalette
         cm[currentColormap].setValues(pSine);
         for (int i=0; i<NMIXERS; i++)
             mixerValues[i] = m[i];
-//        setColorRanges();
 		mPalette = new int[indexClamp];
 		mEnd_colour = aEnd.getRGB() | 0xff000000;
 
@@ -354,10 +345,8 @@ public class SFTPalette implements IPalette
 	void setCmapType(int hslBaseType[], int hslComponentType[][])
 	{
         for (int m=0; m<NMIXERS; m++) {
-//            System.out.format("setCmapType mixer %d%n", m);
             cm[m].setGlobalType(hslBaseType[m]);
             for (int i=0; i<3; i++) {
-//                System.out.format("setCmapType mixer %d component %d%n", m, i);
                 cm[m].setComponentType(i, hslComponentType[m][i]);
             }
         }
@@ -374,9 +363,6 @@ public class SFTPalette implements IPalette
     
     public double[]  rgb2hsl( double[] rgb, boolean debug)
     {
-        
-        //int huezone = 0;
-        //double rr, gg, bb;
         double hp = 0;
         double h, s, l;
         double r = rgb[0];
@@ -472,7 +458,6 @@ public class SFTPalette implements IPalette
 	
 	public void ParseString(String aString)
 	{
-//        System.out.format("%s%n", aString);
 		String[] lines = aString.split("\n");
 	
 		if (!lines[0].contentEquals("sft_palette"))
@@ -529,21 +514,14 @@ class SFTColormap
     }
     
     public void getValues(double v[][]) {
-//    	System.out.format("SFTColormap.getValues for map %d, chaged = %b%n", mapNumber, changed);    		
         for (int i=0; i<3; i++) {
         	if (!changed)
         		HSLComponents[i].setDefaults();
             HSLComponents[i].getValues(v[i]);
-//        	System.out.format("component %d values:", i);    		
-//        	for (int j=0; j<6; j++)
-//            	System.out.format(" %f", v[i][j]);    		
-//        	System.out.format("%n");        
         }
     }
     
     public void setValues(double v[][]) {
-//    	System.out.format("SFTColormap.setValues for map %d, chaged = %b%n", mapNumber, changed);    
-    	
         for (int i=0; i<3; i++) {
         	double[] d = HSLComponents[i].getDefaults();
         	for (int c=0; c<5; c++) {
@@ -554,10 +532,6 @@ class SFTColormap
         if (changed)
         	for (int i=0; i<3; i++) {
         		HSLComponents[i].setValues(v[i]);
-//        		System.out.format("component %d values:", i);    		
-//        		for (int j=0; j<6; j++)
-//        			System.out.format(" %f", v[i][j]);    		
-//        		System.out.format("%n");  
         	}
     }
     
@@ -584,15 +558,12 @@ class SFTColormap
     }
     
     public void setGlobalType(int globalType) {
-//        System.out.format("setGlobalType, globalType = %d%n", globalType);
-        
         if (cmapType != globalType)
             cmapType = globalType;
         if (cmapType != SFTPalette.UNDEFINED)
             for (int i=0; i<3; i++) {
                 setComponentType(i, globalType);
             }
-//        System.out.format("Global type is now %s%n", SFTPalette.typeNames[cmapType]);
     }
     
     public void setComponentType(int component, int componentType) {
@@ -623,7 +594,6 @@ class SFTColormap
                     break;
             }
         }
-//        System.out.format("Component %d is now %s%n", component, HSLComponents[component].type());
     }
     
     public int getComponentType(int component) {
@@ -752,18 +722,11 @@ class sineSFTComponentmap extends SFTComponentmap
         
         fullPhase = sPhase + SFTPalette.getCMapPhase(mapNumber) + SFTPalette.getGlobalPhase();
         fullPhase = fullPhase % (2*Math.PI);
-//		System.out.format("sFreq = %f, sFreqScale = %f%n", sFreq, sFreqScale);    		
-//		System.out.format("component %d, map %d: sFreqScale = %f%n", i, mapNumber, sFreqScale);    		
         if (sFreqScale > 0) {
             double x = i/colorFrequency;
-//			System.out.format("i = %d, x = %f%n", i, x);    		
             if (x > 1) {
-//        		System.out.format("x = %f, i = %d, colorFrequency = %f%n", x, i, colorFrequency);    		
-//            	Thread.dumpStack();
             }
             x = computeShape(2*Math.PI*(x*sFreq*sFreqScale)+fullPhase, sShape);
-//            x = 2*Math.PI*x*sFreq*sFreqScale;
-//			System.out.format("shape x = %f%n", x);    		
             co = sOffset + (1-sOffset)*sAmp*(1 + Math.sin(x))/2;
         } else {
             co = sOffset + (1-sOffset)*sAmp;
@@ -912,8 +875,6 @@ class expRampSFTComponentmap extends SFTComponentmap
             else
                 co = 0;
             
-            //                if (co > 1 || co < 0)
-            //                    System.out.format("co = %f, dx = %f, sAmp = %f, rShape = %f%n", co, dx, sAmp, rShape);
             co = sOffset + (1-sOffset)*co;
         } else {
             co = sOffset + (1-sOffset)*sAmp;
@@ -960,9 +921,6 @@ class expBiRampSFTComponentmap extends SFTComponentmap
         	else if (rShape < 0 ) 
         	    co = sAmp*(1-gt);
             
-            
-            //                if (co > 1 || co < 0)
-            //                    System.out.format("co = %f, dx = %f, sAmp = %f, rShape = %f%n", co, dx, sAmp, rShape);
             co = sOffset + (1-sOffset)*co;
         } else {
             co = sOffset + (1-sOffset)*sAmp;
@@ -1013,8 +971,6 @@ class stripeSFTComponentmap extends SFTComponentmap
             else
                 co = 0;
             
-            //                if (co > 1 || co < 0)
-            //                    System.out.format("co = %f, dx = %f, sAmp = %f, rShape = %f%n", co, dx, sAmp, rShape);
             co = sOffset + (1-sOffset)*co;
         } else {
             co = sOffset + (1-sOffset)*sAmp;
@@ -1061,8 +1017,6 @@ class gaussianSFTComponentmap extends SFTComponentmap
             else
                 co = 0;
             
-            //                if (co > 1 || co < 0)
-            //                    System.out.format("co = %f, dx = %f, sAmp = %f, rShape = %f%n", co, dx, sAmp, rShape);
             co = sOffset + (1-sOffset)*co;
         } else {
             co = sOffset + (1-sOffset)*sAmp;

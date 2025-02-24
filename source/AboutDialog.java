@@ -87,14 +87,6 @@ URI mUri;
         label.setPreferredSize(new Dimension(250,40));
         p.add(label,gbc);
         
- /*      gbc.gridx=0;
-        gbc.gridy++;
-        gbc.gridwidth=1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        label=new JLabel("Palette Editor by Steve Bryson", null, JLabel.LEFT);
-        label.setPreferredSize(new Dimension(250,40));
-        p.add(label,gbc);
-*/
         gbc.gridx=0;
         gbc.gridy++;
         gbc.gridwidth=1;
@@ -105,7 +97,6 @@ URI mUri;
         
         gbc.gridy++;
 		try {
-//			mUri = new URI("http://www.science.eclipse.co.uk/SFT_Maths.html");
 			mUri = new URI("http://www.superfractalthing.co.nf/sft_maths.pdf");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block

@@ -81,8 +81,6 @@ public class SuperFractalThingJNLP extends SuperFractalThing
 	        { 
 	            // ask user to select a file through this service 
 	            FileContents fc = fos.openFileDialog(null, null); 
-	            // ask user to select multiple files through this service 
-	            //FileContents[] fcs = fos.openMultiFileDialog(null, null); 
 	            
 	            InputStream is = fc.getInputStream();
 	            BufferedReader br = new BufferedReader( new InputStreamReader(is));		
@@ -209,8 +207,6 @@ public class SuperFractalThingJNLP extends SuperFractalThing
 	        { 
 	            // ask user to select a file through this service 
 	            FileContents fc = fos.openFileDialog(null, null); 
-	            // ask user to select multiple files through this service 
-	            //FileContents[] fcs = fos.openMultiFileDialog(null, null); 
 	            
 	            InputStream is = fc.getInputStream();
 	            BufferedReader br = new BufferedReader( new InputStreamReader(is));		

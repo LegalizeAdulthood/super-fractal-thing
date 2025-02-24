@@ -49,7 +49,6 @@ class PaletteDisplay extends JPanel{
     	double hScale = ((double) wHeight - 40)/pdHeight;
     	w = (int) (pdWidth*((double) wWidth)/800);
     	pdScaledWidth = w;
-//		System.out.format("window size = %d, %d%n", wSize.width, wSize.height);    		
 
     	BufferedImage pImage;
 
@@ -69,7 +68,6 @@ class PaletteDisplay extends JPanel{
         			maxFreq = f[i][j];
         period = 1/maxFreq;
         periodRange = 2*period;
-//		System.out.format("periodRange = %f%n", periodRange);    		
         
         pImage = mPalette.drawCMap(-1, (int)(hScale*h), w, periodRange);
         g2.drawString("Mix", 25, (int)(hScale*35));

@@ -21,12 +21,6 @@
 
 import java.awt.Color;
 
-/*
-interface IPaletteChangeNotify
-{
-	void PaletteChanged();
-}
-*/
 class SFTPaletteVeryOld implements IPalette
 {
 
@@ -253,13 +247,9 @@ public class SFTPaletteOld implements IPalette
 		if (mPalette[i]!=0)
 			return mPalette[i];
 		
-		//int red = (int)(256*(i*(0.1230459405F + (0.05*(Math.exp(-i/5000.0)-1)) )));// + Math.sin(i*0.033)));
-		//int blu = (int)(256*(i*(0.0039432465F - (0.004*(Math.exp(-i/10000.0)-1)) )));// + Math.sin(i*0.007)));
-		//int grn = (int)(256*(i*(0.0274356756F + (0.005*(Math.exp(-i/20000.0)-1)) )));// + Math.sin(i*0.0073)));
-		
-		int red = mStart_red + (int)(256*(i*(mDr_di1 + (1-Math.exp(-i/mDecay_r))*(mDr_di2-mDr_di1) )));// + Math.sin(i*0.033)));
-		int blu = mStart_blu + (int)(256*(i*(mDg_di1 + (1-Math.exp(-i/mDecay_g))*(mDg_di2-mDg_di1) )));// + Math.sin(i*0.007)));
-		int grn = mStart_grn + (int)(256*(i*(mDb_di1 + (1-Math.exp(-i/mDecay_b))*(mDb_di2-mDb_di1) )));// + Math.sin(i*0.0073)));
+		int red = mStart_red + (int)(256*(i*(mDr_di1 + (1-Math.exp(-i/mDecay_r))*(mDr_di2-mDr_di1) )));
+		int blu = mStart_blu + (int)(256*(i*(mDg_di1 + (1-Math.exp(-i/mDecay_g))*(mDg_di2-mDg_di1) )));
+		int grn = mStart_grn + (int)(256*(i*(mDb_di1 + (1-Math.exp(-i/mDecay_b))*(mDb_di2-mDb_di1) )));
 
 		mColour[0] = red & 255;
 		mColour[1] = grn & 255;
@@ -267,13 +257,6 @@ public class SFTPaletteOld implements IPalette
 		
 		
 		
-/*		red *= 1-Math.pow(Math.sin(6.28*i/10000), 1000);
-		
-		double fraction = 0.5*Math.pow(Math.sin(6.28*i/11000), 1000);
-		red = (int)(fraction * 255 + (1-fraction)*red);
-		grn *= 1-fraction;
-		blu *= 1-fraction;
-*/		
 		for (int j=0; j< mBands.length; j++)
 		{
 			mBands[j].Apply(mColour, i);

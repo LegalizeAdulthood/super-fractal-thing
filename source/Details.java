@@ -304,7 +304,7 @@ public class Details extends Approximation {
 					fsq = tfsq;
 					hit=true;
 				}
-				if (hit/* && factor <=1.0*/) // seems to work better if it just exits on first one
+				if (hit) // seems to work better if it just exits on first one
 					break;
 					
 				factor *= 0.5;
@@ -338,10 +338,6 @@ public class Details extends Approximation {
 		double delta = dte.doubleValue();
 		double dist = delta/4 + delta*delta/32;
 		
-/*		BigDecimal test,test2;
-		test = new BigDecimal( 2, mMath_context );
-		test2 = test.add(x,mMath_context);
-*/		
 		return dist*Math.abs(dist);
 	}
 	
@@ -393,7 +389,6 @@ public class Details extends Approximation {
 			mFull_y_screen_centre = pY;
 		}
 		
-//		FixedInf<4> x(pX->NumWords()),y(pX->NumWords()),p(pX->NumWords()),q(pX->NumWords()),c(pX->NumWords()),ci(pX->NumWords());
 		BigDecimal x,y,p,q,c,ci;
 		int count = 1;
 		
@@ -402,9 +397,6 @@ public class Details extends Approximation {
 		
 		if (aSize_extra_exponent!=0)
 		{
-			//double factor = Math.pow(10.0, (double)-aSize_extra_exponent);
-			//c = c.multiply( new BigDecimal(factor, mMath_context) );
-			//ci = ci.multiply( new BigDecimal(factor, mMath_context) );
 			c = c.movePointLeft((int)aSize_extra_exponent);
 			ci = ci.movePointLeft((int)aSize_extra_exponent);
 		}
@@ -571,7 +563,7 @@ public class Details extends Approximation {
 		{
 			asq = A*A+Ai*Ai;
 			double xsq = xd*xd+yd*yd;
-			if (xsq < 1.5f*asq && count>30 /*&& mDo_repeaters*/)
+			if (xsq < 1.5f*asq && count>30)
 			{
 				//we have a potential repeater
 				//This point returns to xd,yd
@@ -588,24 +580,16 @@ public class Details extends Approximation {
 				{
 					// The approximation was stopped because X_n got close to zero.
 					// I call the actual point (Y) where Y_n is exactly zero a repeater point. 
-/*					if (false)
 					{
-						// use repeater method
-						// Java version of SuperFractalThing doesn't do this
-						FillInCubicForRepeater(pX,pY,aIteration_limit,aActual_width,aSize_extra_exponent,screen_x, screen_y, count);
-						return;
-					}
-					else
-*/					{
 						// use normal method
 						if (true)
 						{
 							//this is duplicate of stuff below
 							mFull_x_after_approx = x;
 							mFull_y_after_approx = y;
-							mX = new double[aIteration_limit-count];//(double*)malloc(sizeof(double) * (aIteration_limit-count));
-							mXi = new double[aIteration_limit-count];//(double*)malloc(sizeof(double) * (aIteration_limit-count));
-							mDistance_to_edge_sqr = new double[aIteration_limit-count];//(double*)malloc(sizeof(double) * (aIteration_limit-count));
+							mX = new double[aIteration_limit-count];
+							mXi = new double[aIteration_limit-count];
+							mDistance_to_edge_sqr = new double[aIteration_limit-count];
 							
 							//Move approximation to repeater position
 							ReFillInCubic(aIteration_limit,aActual_width,aSize_extra_exponent,screen_x+aScreen_offset_x, screen_y+aScreen_offset_y);
@@ -614,16 +598,6 @@ public class Details extends Approximation {
 							if (TestRepeaterPoint( aIteration_limit, aActual_width, aSize_extra_exponent, screen_x+aScreen_offset_x, screen_y+aScreen_offset_y ))
 							{
 								//Not done in java version
-								/*
-								FindScreenCoords(screen, -GetReal(0), -GetImaginary(0) );
-								screen_x = screen[0];
-								screen_y = screen[1];
-								
-								screen_x+=mScreen_offset_x;
-								screen_y+=mScreen_offset_y;
-								FillInCubicForRepeater(pX,pY,aIteration_limit,aActual_width,aSize_extra_exponent,screen_x, screen_y, count);
-								*/
-							
 							}
 							else
 							{
@@ -641,8 +615,6 @@ public class Details extends Approximation {
 		mFull_y_after_approx = y;
 
 		
-		//mX = (double*)malloc(sizeof(double) * (aIteration_limit-count));
-		//mXi = (double*)malloc(sizeof(double) * (aIteration_limit-count));
 		mX = new double[aIteration_limit-count];
 		mXi = new double[aIteration_limit-count];
 		
@@ -752,7 +724,7 @@ public class Details extends Approximation {
 
 		if (aSize_extra_exponent!=0)
 		{
-			p= new BigDecimal(aScreen_offset_x*mActual_width);   //aScreen_offset_x * mActual_width;
+			p= new BigDecimal(aScreen_offset_x*mActual_width);
 			c=p.movePointLeft((int)aSize_extra_exponent);
 			c = c.add(pX);
 			
@@ -782,7 +754,7 @@ public class Details extends Approximation {
 			p = p.add(c, mMath_context);
 			
 			q = x.multiply(y, mMath_context);
-			q = q.add(q, mMath_context);//q<<=1;
+			q = q.add(q, mMath_context);
 			q = q.add(ci, mMath_context);
 			
 			x=p;
@@ -823,9 +795,6 @@ public class Details extends Approximation {
 		int i, target,target2,a,r;
 
 		double error[] = new double[2];
-		
-		//if (!mDo_repeaters)
-		//	return false;
 		
 		CalculateApproximation(aPoint_x-mScreen_offset_x,aPoint_y-mScreen_offset_y, error );
 		
@@ -901,7 +870,6 @@ public class Details extends Approximation {
 						
 						if (i!=0 || i>target+100)
 						{
-							//ReFillIn(aIteration_limit,aActual_width,aSize_extra_exponent,xs[a]*rs[r],ys[a]*rs[r]);
 							mFailed_repeater=true;
 							SetRepeaterFailPoint(x+mScreen_offset_x,y+mScreen_offset_y);
 							return false;
@@ -945,7 +913,6 @@ public class Details extends Approximation {
 						i = CalculateIterations( this, x,y );
 						if (i!=0 || i>target+100)
 						{
-							//ReFillIn(aIteration_limit,aActual_width,aSize_extra_exponent,x,y);
 							mFailed_repeater=true;
 							SetRepeaterFailPoint(x+mScreen_offset_x,y+mScreen_offset_y);
 							return false;
@@ -964,7 +931,6 @@ public class Details extends Approximation {
 				i = CalculateIterations( this, x,y );
 				if (i!=0 || i>target+100)
 				{
-					//ReFillIn(aIteration_limit,aActual_width,aSize_extra_exponent,x,y);
 					mFailed_repeater=true;
 					SetRepeaterFailPoint(x+mScreen_offset_x,y+mScreen_offset_y);
 					return false;
@@ -985,23 +951,6 @@ public class Details extends Approximation {
 		if (mFailed_repeater)
 			return false;//Already got a failed repeater point
 		
-	/*	double xd = mX[0];
-		double yd = mXi[0];
-		
-		double asq = A*A+Ai*Ai;
-		double xsq = xd*xd+yd*yd;
-
-		if (xsq < 1.5f*asq && GetTotalIterations()>30 && mDo_repeaters)
-		{
-			double screen_x, screen_y;
-			FindScreenCoords(&screen_x, &screen_y, -xd, -yd );
-			if (screen_x*screen_x + screen_y*screen_y < 2)
-			{
-				ReFillInCubic(aIteration_limit,aActual_width,aSize_extra_exponent,screen_x+aScreen_offset_x, screen_y+aScreen_offset_y);
-				return TRUE;
-			}
-		}
-	*/
 		return false;
 	}
 }

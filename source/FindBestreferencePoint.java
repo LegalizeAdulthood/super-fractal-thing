@@ -74,20 +74,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 	
 	void GetTopAverage(int aCount, float pq[] )
 	{
-/*		std::map<int, FBRPEntry>::reverse_iterator itr;
-		int c=0;
-		p=0;
-		q=0;
-		for (itr = mMap.rbegin(); itr != mMap.rend() && c<aCount; itr++)
-		{
-			p+= itr->second.total_p;
-			q+= itr->second.total_q;
-			c+= itr->second.count;
-		}
-		
-		p/= c;
-		q/= c;
-*/		
 	}
 
 
@@ -141,7 +127,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 		
 		DoAPass( 0,0, 1.6f,1.6f, 9 );
 		
-		//std::map<int, FBRPEntry>::reverse_iterator top,top2,top3;
 		Map.Entry<Integer,FBRPEntry> top,top2,top3;
 		
 		
@@ -155,11 +140,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			else
 				top2 = top;
 			
-/*			if (itr.hasNext())
-				top_extra = itr.next();
-			else
-				top_extra = top;
-*/		
 			top3 = mMax_count;
 
 			
@@ -169,18 +149,11 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			// stop us going back to repeater
 			if ( mDetails.GetIsFailedRepeater() )
 			{
-	/*			while ((top.getValue()).count == 1 &&
-					(p-initial_p)*(p-initial_p)+(q-initial_q)*(q-initial_q) < 1.6f*1.6f*0.125f/100.0f)
-				{
-					top++;
-					p = (top.getValue()).total_p/(top.getValue()).count;
-					q = (top.getValue()).total_q/(top.getValue()).count;
-				}
-	*/		}
-			/*else*/ if ((top.getValue()).count==1 && (top2.getValue()).count==1 &&
+			}
+			if ((top.getValue()).count==1 && (top2.getValue()).count==1 &&
 					 (Math.abs( (top.getValue()).total_p - (top2.getValue()).total_p ) > range/9 * 1.5f ||
 					  Math.abs( (top.getValue()).total_q - (top2.getValue()).total_q ) > range/9 * 1.5f ) &&
-						 ((mMax_count.getValue()).count<10 || (mMax_count.getValue()).count<mMax_count_depth*2))		//Added 30/10/2010
+						 ((mMax_count.getValue()).count<10 || (mMax_count.getValue()).count<mMax_count_depth*2))
 			{
 				int x,y,max_i=-1, max_x=0,max_y=0;
 				float repeater_x = (initial_p - mP_start)/mP_step;
@@ -314,8 +287,7 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 				{
 					initial = mDetails.GetTotalIterations();
 					int test=mDetails.CalculateIterations(mDetails, p-mDetails.GetScreenOffsetX(), q-mDetails.GetScreenOffsetY() );
-					//if (test>initial || !test)													// pre change 20/10/2010
-					if ((test>initial || test==0) && ((top.getValue()).count<=10 || test == - top.getKey()))	// change 20/10/2010
+					if ((test>initial || test==0) && ((top.getValue()).count<=10 || test == - top.getKey()))
 						mDetails.ReFillInCubic(mDetails.GetIterationLimit(), mDetails.GetActualWidth(), mDetails.GetSizeExtraExponent(), p, q );
 					else
 						initial=-1;
@@ -361,8 +333,7 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 				int test;
 				if ((Math.abs((top.getValue()).non_averaged_p-mDetails.GetScreenOffsetX()) > range/8 ||
 						Math.abs((top.getValue()).non_averaged_q-mDetails.GetScreenOffsetY()) > range/8) &&
-						(top.getValue()).count >= 3 /*&&
-						!mDetails->GetIsFailedRepeater()*/)
+						(top.getValue()).count >= 3)
 				{
 					test = mDetails.CalculateIterations(mDetails, 1/1000.0f, 1/1000.0f );
 					if (-top.getKey() > test+500)
@@ -428,7 +399,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			fail_y = pq[1];
 			float rep_x = mDetails.GetFailedRepeaterDetails().GetScreenOffsetX();
 			float rep_y = mDetails.GetFailedRepeaterDetails().GetScreenOffsetY();
-			//int fail_iterations = mDetails.CalculateIterations(mDetails, fail_x-mDetails.GetScreenOffsetX(), fail_y-mDetails.GetScreenOffsetY() );
 			int repeater_interations = mDetails.CalculateIterations(mDetails, rep_x-mDetails.GetScreenOffsetX(), rep_y-mDetails.GetScreenOffsetY() );
 			int near_repeater_interations = mDetails.CalculateIterations(mDetails, rep_x+0.02f-mDetails.GetScreenOffsetX(), rep_y-mDetails.GetScreenOffsetY() );
 			int test;
@@ -520,16 +490,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 
 			mDetails = normal_details;
 			
-	/*		float new_x = mDetails->GetFailedRepeaterDetails()->GetScreenOffsetX();
-			float new_y = mDetails->GetFailedRepeaterDetails()->GetScreenOffsetY();
-			
-			int new_interations = mDetails->CalculateIterations(mDetails, new_x-mDetails->GetScreenOffsetX(), new_y-mDetails->GetScreenOffsetY() );
-			
-			if (new_interations==repeater_interations)
-			{
-				return mDetails;
-			}
-	*/
 		}
 		
 		if (centre_check_details!=null)
@@ -538,8 +498,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			{				
 				p=0; q=0;
 				range = 0.6f;
-				
-				//mDetails = centre_check_details;
 				
 				for (pass=0; pass<50; pass++)
 				{
@@ -602,11 +560,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 						
 						if (range <= 1/50.0f)
 							break;
-						
-						//if (pass==0 && (Math.abs(p)>0.3 || Math.abs(q)>0.3) && !mDetails->GetIsFailedRepeater())
-						//{
-						//	centre_check_details = new CDetails(mDetails);
-						//}
 						
 						int test=mDetails.CalculateIterations(mDetails, p-mDetails.GetScreenOffsetX(), q-mDetails.GetScreenOffsetY() );
 						if (test>mDetails.GetTotalIterations() || test==0 ||	failed_repeater_bodge)
@@ -719,10 +672,7 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 		mP_step=pstep;
 		mQ_step=qstep;
 		
-		//std::map<int, FBRPEntry>::reverse_iterator itr;
-		
 		FBRPEntry entry;
-		//FBRPPrintf("//////////////////////////\n");
 		
 		for (q= qstart,y=0; q<qend; q+=qstep,y++)
 		{
@@ -730,7 +680,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			{
 				i=mDetails.CalculateIterations(mDetails, p-mDetails.GetScreenOffsetX(), q-mDetails.GetScreenOffsetY() );
 
-				//FBRPPrintf("%10d",i);
 				if (i==0)
 					i=0x7fffffff;
 				
@@ -742,7 +691,7 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 				entry = mMap.get(-i);
 				if (entry==null)
 				{
-					entry = new FBRPEntry();//&mMap[i];
+					entry = new FBRPEntry();
 					mMap.put(-i, entry);
 				}
 				entry.count++;
@@ -758,23 +707,12 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 				}
 				
 			}
-			//FBRPPrintf("\n");
 		}
 
 
 		//Now find max count
 		int max_count=0;
 		int depth=0;
-/*		for (itr = mMap.rbegin(),depth=0; itr != mMap.rend(); depth+=itr->second.count,itr++)
-		{
-			if (itr->second.count > max_count)
-			{
-				mMax_count = itr;
-				max_count = itr->second.count;
-				mMax_count_depth = depth;
-			}
-		}
-*/
 		Set<Map.Entry<Integer,FBRPEntry>> set = mMap.entrySet();
 		Iterator<Map.Entry<Integer,FBRPEntry>> itr = set.iterator();
 		while (itr.hasNext())
@@ -789,12 +727,6 @@ Map.Entry<Integer,FBRPEntry> mMax_count;
 			}
 			depth += fbrpent.count;
 		}
-		
-//		FBRPPrintf("//////////////////////////\n");
-//		for (i=0, itr = mMap.rbegin(); i<25 && itr != mMap.rend(); itr++, i++)
-//		{
-//			FBRPPrintf("i=%d c=%d p=%f,q=%f\n",itr->first, itr->second.count, itr->second.total_p, itr->second.total_q);
-//		}
 	}
 
 

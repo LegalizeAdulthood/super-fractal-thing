@@ -25,7 +25,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,9 +33,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-//import javax.swing.BorderFactory;
 import javax.swing.JButton;
-//import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -44,55 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-/*
-interface PaletteIO
-{
-	void SavePalette(String str);
-	String LoadPalette();
-}
 
-class ColourButton extends JButton implements ActionListener
-{
-	static final long serialVersionUID = 0;//get rid of warning
-	Color mColour;
-	JFrame mFrame;
-	
-	public ColourButton(String aName, Color col,JFrame aFrame)
-	{
-		super(aName);
-		mColour = col;
-		mFrame = aFrame;
-	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, mColour));
-	    addActionListener(this);
-	}
-	@Override
-	public void actionPerformed(ActionEvent arg0)
-	{
-		Color c = JColorChooser.showDialog(mFrame, "Pick a Color"
-                , mColour);	
-		if (c!=null)
-			mColour = c;
-		
-	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, mColour));
-	}
-
-	public Color GetColour()
-	{
-		return mColour;
-	}
-	public void SetColour(int r, int g, int b)
-	{
-		mColour = new Color(r,g,b);
-	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, mColour));
-	}
-	public void SetColour(Color aColour)
-	{
-		mColour = aColour;
-	    setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, mColour));
-	}
-}
-
-*/
 public class PaletteDialogOld implements IPaletteDialog
 {
 JDialog mDialog;
@@ -153,11 +102,8 @@ ColourButton mBand_offset[];
         gbc.gridx=0;
         gbc.gridwidth=1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
- //       JButton col = new JButton("Start Colour");
- //       col.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.orange));
         mStart_colour = new ColourButton("Start Colour", Color.black, aFrame);
         p.add(mStart_colour,gbc);       
-        //col.addActionListener(this);       	
         gbc.gridx+=2;
         mEnd_colour = new ColourButton("M.Set Colour", Color.black, aFrame);
         p.add(mEnd_colour,gbc);       
@@ -315,7 +261,6 @@ ColourButton mBand_offset[];
 	        gbc.gridx++;
 	        mBand_modulate[i] = new ColourButton("", Color.black, aFrame);
 	        p.add(mBand_modulate[i],gbc);       
-	        //col.addActionListener(this);       	
 	        gbc.gridx++;
 	        mBand_offset[i] = new ColourButton("", Color.black, aFrame);
 	        p.add(mBand_offset[i],gbc);       

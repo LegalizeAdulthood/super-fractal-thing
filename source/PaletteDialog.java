@@ -129,7 +129,6 @@ public class PaletteDialog implements IPaletteDialog, ChangeListener, PaletteLib
     int hslBaseType[];
     int prevHslBaseType[];
 
-    //JFormattedTextField mDecay[];
     JButton mCancel_button;
     JButton mOK_button;
     boolean mOK;
@@ -509,20 +508,8 @@ public class PaletteDialog implements IPaletteDialog, ChangeListener, PaletteLib
 		new PaletteLibrary(aMenuBar, this);	
 	}
 
-/*
     public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider)e.getSource();
-        if (!source.getValueIsAdjusting()) {
-            System.out.format("Slider state change!%n");
-            if (paletteLoaded == true)
-                SetPaletteValues();
-        }
-    }
-*/
-    public void stateChanged(ChangeEvent e) {
-        //JSlider source = (JSlider)e.getSource();
         if (paletteLoaded == true) {
-//        	System.out.format("stateChanged%n");    		
             setCurrentColormap();
             SetPaletteValues();
             pDisplay.repaint();
@@ -554,23 +541,19 @@ public class PaletteDialog implements IPaletteDialog, ChangeListener, PaletteLib
             prevHslBaseType[currentCmap] = hslBaseType[currentCmap];
         }
         if (source == hslTypeMenu) {
-//            System.out.format("HSL menu, command %d%n", hslTypeMenu.getSelectedIndex());
             hslBaseType[currentCmap] = hslTypeMenu.getSelectedIndex();
             for (int i=0; i<3; i++)
                 hslComponentType[currentCmap][i] = hslTypeMenu.getSelectedIndex();
             
             mPalette.setCmapType(currentCmap, hslBaseType[currentCmap]);
-//        	System.out.format("changed cmap type%n");    		
             if (!mPalette.getChanged(currentCmap)) {
         		GetPaletteValues();
             }
         }
         for (int i=0; i<3; i++) {
         	if (source == colorComponentTypeMenu[i]) {
-        		//            System.out.format("cmap %d Hue menu, command %d%n", currentCmap, colorComponentTypeMenu[0].getSelectedIndex());
         		hslComponentType[currentCmap][i] = colorComponentTypeMenu[i].getSelectedIndex();
         		mPalette.setCmapType(currentCmap, i, hslComponentType[currentCmap][i]);
-//    			System.out.format("changed component %d cmap type%n", i);    		
     			if (!mPalette.getChanged(currentCmap)) 
     				GetPaletteValues();
         		if (hslComponentType[currentCmap][i] != hslBaseType[currentCmap]) {
@@ -670,17 +653,11 @@ public class PaletteDialog implements IPaletteDialog, ChangeListener, PaletteLib
 		double globalPhase = SFTPalette.getGlobalPhase();
 		
 		mPalette.GetGradientValues(p, s, cols);
-//      System.out.format("GetPaletteValues: globalPhase = %f, cMapPhase = %f%n", globalPhase, cMapPhase);
         
 		mEnd_colour.SetColour(cols[1]);
 		
 		for (int i=0; i<3; i++)
 		{
-//			System.out.format("set component %d values: %n", i);
-//			for (int j=0; j<6; j++)
-//				System.out.format(" %f", s[i][j]);
-//			System.out.format("%n");
-			
 			sFreqScale[i].setValue(s[i][0]);
 			sFreq[i].setValue((int) (s[i][1]*sliderScale));
 			sAmp[i].setValue((int) (s[i][2]*sliderScale));
@@ -697,14 +674,8 @@ public class PaletteDialog implements IPaletteDialog, ChangeListener, PaletteLib
         }
         
         mPalette.getCmapType(hslBaseType, hslComponentType);
-//        System.out.format("GetPaletteValues: currentCmap = %d, hslBaseType = %d, prevHslBaseType = %d%n", currentCmap, hslBaseType[currentCmap], prevHslBaseType[currentCmap]);
-//		for (int i=0; i<3; i++)
-//	        System.out.format("component %d type = %d%n", i, hslComponentType[currentCmap][i]);
         if (hslBaseType[currentCmap] != prevHslBaseType[currentCmap]) {
-//            System.out.format("setting menus%n");
-
         	hslTypeMenu.setSelectedIndex(hslBaseType[currentCmap]);
-//        	if (hslBaseType[currentCmap] != SFTPalette.UNDEFINED)
         		for (int i=0; i<3; i++)
         			colorComponentTypeMenu[i].setSelectedIndex(hslComponentType[currentCmap][i]);
             prevHslBaseType[currentCmap] = hslBaseType[currentCmap];

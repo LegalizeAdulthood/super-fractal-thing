@@ -115,7 +115,6 @@ public class Approximation {
 		double scale = 2 / aScreen_width;
 
 		accuracy *= 100;
-		//accuracy /= 10000;
 		
 		accuracy *= scale*scale;
 		
@@ -176,7 +175,6 @@ public class Approximation {
 			if (extra+offset>=aDetails.GetTotalIterations()-aDetails.GetApproxIterations()-1)
 			{
 				// run out of screen centre refence x values.
-				//Bang();
 				break;
 			}
 			//get centre xn
@@ -302,7 +300,6 @@ public class Approximation {
 	int CalculateIterations(Details aDetails, float aScreen_delta_x, float aScreen_delta_y)
 	{
 		double _dx[]=new double[2];
-	//#define double long double
 		double dx,dxi;
 		int extra;
 		double x,xi,temp,tempi,dxsq,x2;
@@ -316,8 +313,6 @@ public class Approximation {
 
 		int count;
 		
-		//return mIterations_n;
-
 		//Use the A,B and C coefficients to get the first DELTA.
 		CalculateApproximation( aScreen_delta_x-mScreen_offset_from_centre_x,
 								aScreen_delta_y-mScreen_offset_from_centre_y,
@@ -338,7 +333,6 @@ public class Approximation {
 
 			if (extra >= aDetails.GetTotalIterations()- aDetails.GetApproxIterations()-1)
 			{
-				//Bang();
 				break;
 			}
 			
@@ -397,7 +391,6 @@ public class Approximation {
 			count++;
 			if (count>=aDetails.GetIterationLimit())
 			{
-				//pStats->pixels_in_set++;
 				return 0;
 			}
 		}
